@@ -78,20 +78,4 @@ sudo apt install bleachbit
 sudo bleachbit
 ```
 
-### Baobab (Disk usage GUI)
-
-```bash
-sudo apt install baobab
-baobab
-```
-
-### Stacer (System Optimizer GUI)
-
-```bash
-sudo apt install stacer
-stacer
-```
-
 ---
-
-✅ Keep your Ubuntu clean and optimized regularly!
