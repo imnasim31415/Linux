@@ -120,3 +120,76 @@ When booting with `rd.break`, you are dropped into the **initramfs environment**
 👉 Now the password is updated in /etc/shadow of your actual RHEL installation. Think of `chroot` as “stepping into your real house so changes actually stick.”
 
 ---
+
+
+```
+[ Power Button ]
+        |
+        v
++--------------------+
+|  BIOS / UEFI FW    |
++--------------------+
+| - POST (hardware)  |
+| - Init CPU, RAM    |
+| - Find boot device |
++--------------------+
+        |
+        v
++-------------------------+
+| Bootloader (GRUB2)      |
++-------------------------+
+| - Shows boot menu       |
+| - Loads kernel (vmlinuz)|
+| - Loads initramfs       |
++-------------------------+
+        |
+        v
++-------------------------+
+| Linux Kernel            |
++-------------------------+
+| - Decompresses itself   |
+| - Init device drivers   |
+| - Mount initramfs as /  |
+| - Executes /init        |
++-------------------------+
+        |
+        v
++-------------------------+
+| initramfs (RAM FS)      |
++-------------------------+
+| - Load storage modules  |
+| - Handle LVM/RAID       |
+| - Decrypt if needed     |  - (if rd.break → drop shell here)
+| - Mount real root FS    |
+|   -> /sysroot (RHEL)    |
+| - switch_root to /      |
++-------------------------+
+          |
+          v
+
++-------------------------+
+| Real Root Filesystem /  |
++-------------------------+
+| - systemd becomes PID 1 |
+| - Reads target (default)|  - initramfs does switch_root
+|   -> multi-user.target  |  - /sysroot becomes /
+|   -> graphical.target   |
+| - Spawns getty / gdm    |
++-------------------------+
+        |
+        v
++-------------------------+
+|  User Space             |
++-------------------------+
+| - Services start (sshd, |
+|   networking, etc.)     |
+| - SELinux/AppArmor init |
+| - Login prompt (tty/GUI)|
++-------------------------+
+        |
+        v
+[ User logs in ]
+
+
+
+```
