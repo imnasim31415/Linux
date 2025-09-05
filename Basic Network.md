@@ -7,10 +7,10 @@
  └─────────────┬─────────────┘
                │  "hostname or domain?"
                ▼
- ┌───────────────────────────┐
- │ Check /etc/hosts          │
- │ (local static entries)    │
- └─────────────┬─────────────┘
+   ┌───────────────────────────────┐
+   │     Check /etc/hosts          │
+   │     (local static entries)    │
+   └─┬─────────────────────────┬───┘
      │ Match!                  │ No match
      │                         │
      ▼                         ▼
@@ -26,16 +26,16 @@
                         │ LAN IP: 192.168.0.1       │
                         │ - Acts as DNS forwarder   │
                         │ - Knows DHCP hostnames    │
-                        └─────────────┬─────────────┘
+                        └───┬───────────────────────┘
                             │
              ┌──────────────┴───────────────┐
              │ Match                        │  No match
              ▼                              ▼
    Local LAN name found            Not in LAN (needs internet)
-   e.g. "pc2" → 192.168.0.112      e.g. "dsi.com"
+   e.g. "pc2" → 192.168.0.112      ex "dsi.com"
    Router returns local IP         ┌───────────────────────────┐
                                    │ ISP/Public DNS Servers    │
-                                   │ e.g., 8.8.8.8 / 1.1.1.1   │
+                                   │ example 8.8.8.8 / 1.1.1.1 │
                                    │ Queries root → TLD → auth │
                                    └─────────────┬─────────────┘
                                                  │
