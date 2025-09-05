@@ -46,6 +46,68 @@
 ```
 
 
+# Setting a Static IP using *nmcli*
+
+## Current Setup
+
+```
+Interface: wlp0s20f3
+SSID: Tenda@imnasim3.1415
+Current IP: 192.168.0.110/24 (dynamic)
+Gateway: 192.168.0.1
+```
+
+## Steps
+
+### 1. Identify Wi-Fi connection
+
+```bash
+nmcli connection show
+```
+
+### 2. Configure static IP
+
+```bash
+nmcli con mod "Tenda@imnasim3.1415" ipv4.addresses 192.168.0.50/24
+nmcli con mod "Tenda@imnasim3.1415" ipv4.gateway 192.168.0.1
+nmcli con mod "Tenda@imnasim3.1415" ipv4.dns 8.8.8.8
+nmcli con mod "Tenda@imnasim3.1415" ipv4.method manual
+```
+
+### 3. Apply changes
+
+```bash
+nmcli con down "Tenda@imnasim3.1415"
+nmcli con up "Tenda@imnasim3.1415"
+```
+
+### 4. Verify configuration
+
+```bash
+ip addr show wlp0s20f3     # Confirm IP
+ip route                   # Confirm gateway
+nmcli device show wlp0s20f3 # Confirm DNS and method
+```
+
+## Things to remember
+
+* **Pick an IP outside the DHCP pool** of your router.
+* **Check the subnet mask** (`/24` = 255.255.255.0) to match your LAN.
+* **Set the correct default gateway** (usually your router’s IP).
+* **Specify at least one reliable DNS** (e.g., 8.8.8.8, 1.1.1.1).
+* **Persist configuration** via NetworkManager; do not rely on temporary `ip addr add`.
+
+## Optional: Using `nmtui` (Text UI)
+
+1. Run `nmtui`.
+2. Select **Edit a connection**.
+3. Choose your Wi-Fi SSID → **Edit** → Set **IPv4 Configuration** to `Manual`.
+4. Enter IP address, gateway, and DNS.
+5. Save and **Activate** the connection.
+
+---
+
+
 
 # Different tools used
 
