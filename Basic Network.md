@@ -133,8 +133,6 @@ nmcli device show wlp0s20f3 # Confirm DNS and method
 - **`netstat`** may still exist on older servers or minimal distros (`net-tools` package).  
 - For scripting and automation: **`nmcli` + `ss`** is your best combo.
 
-
-
 ---
 
 # FirewallD 
@@ -170,3 +168,102 @@ nmcli device show wlp0s20f3 # Confirm DNS and method
 | drop | Drop all incoming connections |
 
 ---
+# Router IP Scenarios and Flows
+## **Scenario 1: Single PC Browsing the Internet**
+
+**Context:**
+
+* PC → `192.168.0.101`
+* Router LAN → `192.168.0.1`
+* Router WAN → `203.0.113.25`
+* Website → `93.184.216.34`
+
+```
+PC (192.168.0.101)
+   → sends packet to router LAN IP (192.168.0.1)
+   → router translates to WAN IP (203.0.113.25)
+   → Internet (93.184.216.34)
+
+Reply:
+Internet (93.184.216.34)
+   → to router WAN IP (203.0.113.25)
+   → router rewrites to LAN IP (192.168.0.101)
+   → PC gets reply
+```
+
+**Explanation:**
+The PC never talks directly to the Internet. It always hands traffic to the router’s **LAN IP**. The router’s WAN IP is what the Internet sees. NAT keeps track of which device made the request.
+
+---
+
+## **Scenario 2: Two PCs Browsing the Internet**
+
+**Context:**
+
+* PC1 → `192.168.0.101`
+* PC2 → `192.168.0.102`
+* Router LAN → `192.168.0.1`
+* Router WAN → `203.0.113.25`
+
+```
+LAN Side                          WAN Side
+
+PC1 192.168.0.101 ----\
+                      |      Router LAN: 192.168.0.1
+PC2 192.168.0.102 ----+----> Router WAN: 203.0.113.25 ----> Internet
+```
+
+**Explanation:**
+Both PCs share the same public IP (`203.0.113.25`). NAT keeps per-connection mappings so replies from the Internet are correctly forwarded back to the right PC.
+
+---
+
+## **Scenario 3: Two PCs Communicating Locally**
+
+**Context:**
+
+* PC1 → `192.168.0.101`
+* PC2 → `192.168.0.102`
+* Same LAN, same subnet.
+
+```
+PC1 (192.168.0.101) ──────► PC2 (192.168.0.102)
+```
+
+**Explanation:**
+When two devices are on the same subnet, they talk **directly** using ARP to resolve each other’s MAC address. The router is not involved.
+
+---
+
+
+## **Scenario 4: External Device Reaching a PC via Port Forwarding**
+
+**Context:**
+
+* PC → `192.168.0.101`
+* Router LAN → `192.168.0.1`
+* Router WAN → `203.0.113.25`
+* External client wants to SSH into PC.
+
+**Flow:**
+
+```
+External Client → 203.0.113.25:22
+Router (NAT) → forwards to 192.168.0.101:22
+PC responds → Router rewrites back to WAN → Internet
+```
+
+**Explanation:**
+By default, incoming traffic from the Internet is blocked. Port forwarding allows the router to redirect specific ports from WAN to a LAN device.
+
+---
+
+
+# Summary
+
+* Router has **two IPs**: LAN (internal) and WAN (external).
+* PCs always use the **LAN IP** as gateway.
+* NAT translates between LAN IPs and WAN IP.
+* Direct LAN communication does not involve the router.
+* Port forwarding allows external access into LAN.
+* Bridge mode disables NAT, exposing devices directly to the Internet.
