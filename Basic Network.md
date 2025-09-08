@@ -335,6 +335,41 @@ PC responds → Router rewrites back to WAN → Internet
 By default, incoming traffic from the Internet is blocked. Port forwarding allows the router to redirect specific ports from WAN to a LAN device.
 
 ---
+## Scenario 5: NMCLI Routing for a System Interface
+
+**Context:**
+
+* System Interface → `eth0` → LAN 192.168.121.0/24
+* Gateway for specific network → `172.28.128.100`
+* Target Network → `192.168.0.0/24`
+
+**Flow:**
+
+```
+System eth0 → 192.168.121.217
+Traffic to 192.168.0.0/24 → routed via 172.28.128.100
+Other traffic → follows default route
+```
+
+**Commands:**
+
+```bash
+# Add permanent route
+sudo nmcli connection modify 'System eth0' +ipv4.routes "192.168.0.0/24 172.28.128.100"
+
+# Apply changes immediately
+sudo nmcli connection up 'System eth0'
+
+# Verify route
+ip route show
+# 192.168.0.0/24 via 172.28.128.100 dev eth0 proto static
+
+# Remove route if needed
+sudo nmcli connection modify 'System eth0' -ipv4.routes "192.168.0.0/24 172.28.128.100"
+sudo nmcli connection up 'System eth0'
+```
+
+
 
 
 # Summary
