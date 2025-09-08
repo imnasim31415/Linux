@@ -170,8 +170,6 @@ nmcli device show wlp0s20f3 # Confirm DNS and method
 | **Set static IP/DNS**                  | —                              | —                                 | `nmcli con mod <name> ipv4.address ...`          | “Edit Connection”                |
 | **Interactive menu for humans**       | —                              | —                                 | —                                                  | `nmtui`                          |
 
----
-
 ### Notes
 - **`ss`** is faster, more detailed, and recommended over `netstat`.  
 - **`nmcli`** and **`nmtui`** only work if your Linux uses **NetworkManager** (Ubuntu, Fedora, Pop!_OS, etc.).  
@@ -198,7 +196,6 @@ nmcli device show wlp0s20f3 # Confirm DNS and method
 | Enable logging for dropped packets | `sudo firewall-cmd --set-log-denied=all` | Log packets that are denied by firewall. |
 | Reset all rules | `sudo firewall-cmd --complete-reload` | Resets firewalld rules and reloads defaults. |
 
----
 
 ## **Zones Overview**
 
@@ -226,7 +223,7 @@ nmcli device show wlp0s20f3 # Confirm DNS and method
 | Enable RTC sync (Using Local CMOS) | `sudo timedatectl set-local-rtc true`|
 | Disable RTC sync (Using UTC) | `sudo timedatectl set-local-rtc false` (recomended) |
 
-# chronyd / chronyc Cheatsheet
+# chronyd / chronyc
 
 | Task | Command |
 |------|---------|
@@ -368,8 +365,6 @@ ip route show
 sudo nmcli connection modify 'System eth0' -ipv4.routes "192.168.0.0/24 172.28.128.100"
 sudo nmcli connection up 'System eth0'
 ```
-
-
 
 
 # Summary
