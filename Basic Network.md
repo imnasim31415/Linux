@@ -46,7 +46,7 @@
 ```
 ---
 
-# PC1 ↔ PC2 (same LAN, no router involvement except switch)
+# PC1 ↔ PC2 (same LAN)
 ```
 PC1 (192.168.1.10)                  PC2 (192.168.1.11)
         │                                    │
