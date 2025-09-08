@@ -212,6 +212,39 @@ nmcli device show wlp0s20f3 # Confirm DNS and method
 | trusted | Fully trusted, all traffic allowed |
 | drop | Drop all incoming connections |
 
+
+---
+# timedatectl
+
+| Task | Command |
+|------|---------|
+| Check time & sync status | `timedatectl status` |
+| List available timezones | `timedatectl list-timezones` |
+| Set timezone | `sudo timedatectl set-timezone Asia/Dhaka` |
+| Set date & time manually | `sudo timedatectl set-time "2025-09-07 14:30:00"` |
+| Enable NTP sync | `sudo timedatectl set-ntp true` | 
+| Enable RTC sync (Using Local CMOS) | `sudo timedatectl set-local-rtc true`|
+| Disable RTC sync (Using UTC) | `sudo timedatectl set-local-rtc false` (recomended) |
+
+# chronyd / chronyc Cheatsheet
+
+| Task | Command |
+|------|---------|
+| Install chrony | `sudo yum install chrony -y` (RHEL/CentOS)|
+| Check chronyd status | `sudo systemctl status chronyd` |
+| Show connected clients (server mode) | `chronyc clients` |
+| Configuration file | `/etc/chrony.conf` |
+
+
+
+
+✅ **Quick tip**:  
+- Use **`timedatectl`** for **basic system time, timezone, and enabling/disabling NTP**.  
+- Use **`chronyc`** to **query and control the running `chronyd` service**.  
+- Use **`systemctl`** to **start/stop/enable `chronyd`**.  
+
+
+
 ---
 # Router IP Scenarios and Flows
 ## **Scenario 1: Single PC Browsing the Internet**
