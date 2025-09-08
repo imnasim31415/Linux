@@ -44,6 +44,51 @@
 
 
 ```
+---
+
+# PC1 ↔ PC2 (same LAN, no router involvement except switch)
+```
+PC1 (192.168.1.10)                  PC2 (192.168.1.11)
+        │                                    │
+        │--- ARP: Who has 192.168.1.11? ---->│
+        │<-- ARP Reply: MAC of PC2 ----------│
+        │                                    │
+        │------ Data Packet ---------------->│
+        │   Src IP: 192.168.1.10             │
+        │   Dst IP: 192.168.1.11             │
+        │   Src MAC: PC1                     │
+        │   Dst MAC: PC2                     │
+        │                                    │
+       (Switching inside router, no NAT, no routing)
+```
+✅ Direct layer-2 switch forwarding. Very fast, no NAT, no firewall involved.
+
+# PC1 ↔ Internet (via WAN + NAT)
+```
+PC1 (192.168.1.10)           Router (192.168.1.1 LAN / Public_IP WAN)       ISP / Internet
+        │                                │                                      │
+        │--- Packet to Google ---------->│                                      │
+        │   Src IP: 192.168.1.10         │                                      │
+        │   Dst IP: 142.250.x.x          │                                      │
+        │   Next Hop: 192.168.1.1        │                                      │
+        │                                │                                      │
+        │                                │--- NAT Translation ----------------->│
+        │                                │   Src IP changed to Public_IP        │
+        │                                │   Dst IP: 142.250.x.x                │
+        │                                │                                      │
+        │                                │---------------------> Google Server  │
+        │                                │                                      │
+        │                                │<--------------------- Google Reply   │
+        │                                │   Dst IP: Public_IP                  │
+        │                                │                                      │
+        │<--------- NAT Reverse ----------│                                      │
+        │   Dst IP changed back: 192.168.1.10                                   │
+        │   Src IP: 142.250.x.x                                                │
+        │                                │                                      │
+        │------- Reply Received -------->│                                      │
+```
+
+✅ Here the router does routing + NAT so internal private IPs can reach the public Internet.
 
 
 # Setting a Static IP using *nmcli*
