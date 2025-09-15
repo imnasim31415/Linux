@@ -230,7 +230,7 @@ Add `--permanent` to make the change persistent
 | Enable RTC sync (Using Local CMOS) | `sudo timedatectl set-local-rtc true`|
 | Disable RTC sync (Using UTC) | `sudo timedatectl set-local-rtc false` (recomended) |
 
-# chronyd / chronyc
+## chronyd / chronyc
 
 | Task | Command |
 |------|---------|
@@ -239,7 +239,23 @@ Add `--permanent` to make the change persistent
 | Show connected clients (server mode) | `chronyc clients` |
 | Configuration file | `/etc/chrony.conf` |
 
+## Timedatectl vs chronyc
+| Feature / Task                  | `timedatectl` (systemd tool)                          | `chronyc` (Chrony client)                          |
+|---------------------------------|-------------------------------------------------------|---------------------------------------------------|
+| Purpose                         | Manage system clock, timezone, and enable/disable NTP | Query and control the chronyd NTP synchronization |
+| Layer                           | System-level (systemd-timesyncd / chronyd integration)| NTP-level (interacts directly with chronyd daemon)|
+| Show time & sync status         | `timedatectl status`                                  | `chronyc tracking`                                |
+| Change timezone                 | `timedatectl set-timezone Asia/Dhaka`                 | ❌ (not supported)                                |
+| Set manual time/date            | `timedatectl set-time "2025-09-15 20:15:00"`          | ❌ (not supported)                                |
+| Enable/disable NTP sync         | `timedatectl set-ntp true|false`                      | ❌ (chronyd must already be running)              |
+| Show NTP server details         | Limited (just says NTP=active)                        | `chronyc sources -v`                              |
+| Check sync accuracy (offset, drift)| ❌                                                  | `chronyc tracking`, `chronyc sourcestats`        |
+| Adjust hardware clock (RTC)     | `timedatectl set-local-rtc 1`                         | ❌ (not supported)                                |
+| Typical Use Case                | Quick management of clock & timezone                  | Deep monitoring & control of NTP synchronization |
 
+
+## RTC vs NTP
+The **RTC (Real-Time Clock)** is a battery-backed hardware clock on the motherboard that keeps track of time even when the system is powered off, but it can drift and is usually synchronized with the system clock at boot. The **NTP (Network Time Protocol)**, on the other hand, is a software-based mechanism that continuously synchronizes the system clock with reliable external time servers over the network to ensure high accuracy. In practice, RTC provides a baseline time at startup, while NTP maintains long-term precision and corrects clock drift during runtime.
 
 
 ✅ **Quick tip**:  
