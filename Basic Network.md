@@ -184,17 +184,21 @@ nmcli device show wlp0s20f3 # Confirm DNS and method
 |----------|---------|-------------|
 | Check firewalld status | `sudo firewall-cmd --state` | Shows if firewalld is running. |
 | List active zones | `sudo firewall-cmd --get-active-zones` | Displays zones currently in use and their interfaces. |
+| Show default zone | `sudo firewall-cmd --get-default-zone` | Displays the system’s default zone. |
+| Change default zone | `sudo firewall-cmd --set-default-zone=public` | Sets the system’s default zone. |
+| List all available zones | `sudo firewall-cmd --get-zones` | Shows all predefined zones. |
+| Show settings of a zone | `sudo firewall-cmd --zone=public --list-all` | Lists services, ports, and rules in a zone. |
 | Assign interface to zone | `sudo firewall-cmd --zone=public --change-interface=eth0` | Temporarily assign an interface to a zone. |
-| Make interface zone permanent | `sudo firewall-cmd --zone=public --change-interface=eth0 --permanent` | Persists the interface-zone mapping across reboots. |
 | Allow service | `sudo firewall-cmd --zone=public --add-service=http` | Temporarily allow a service (HTTP). |
-| Allow service permanently | `sudo firewall-cmd --zone=public --add-service=http --permanent` | Makes the service allowed across reboots. |
-| Open port | `sudo firewall-cmd --zone=public --add-port=8080/tcp` | Temporarily open a specific TCP/UDP port. |
-| Open port permanently | `sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent` | Persist the open port. |
 | Remove service | `sudo firewall-cmd --zone=public --remove-service=http` | Temporarily block a service. |
-| Remove port | `sudo firewall-cmd --zone=public --remove-port=8080/tcp` | Temporarily block a port. |
+| List services | `sudo firewall-cmd --get-services` | Shows all services firewalld can manage. |
+| Open port | `sudo firewall-cmd --zone=public --add-port=8080/tcp` | Temporarily open a specific TCP/UDP port. || Remove port | `sudo firewall-cmd --zone=public --remove-port=8080/tcp` | Temporarily block a port. |
+| Allow IP range | `sudo firewall-cmd --zone=public --add-source=192.168.1.0/24` | Allows traffic from a specific IP range. |
+| Add port forwarding | `sudo firewall-cmd --zone=public --add-forward-port=port=2222:proto=tcp:toport=22:toaddr=192.168.0.101` | Forward traffic from one port to another host/port. |
 | Reload firewalld | `sudo firewall-cmd --reload` | Apply permanent changes without restarting firewall. |
-| Enable logging for dropped packets | `sudo firewall-cmd --set-log-denied=all` | Log packets that are denied by firewall. |
 | Reset all rules | `sudo firewall-cmd --complete-reload` | Resets firewalld rules and reloads defaults. |
+
+Add `--permanent` to make the change persistent 
 
 
 ## **Zones Overview**
