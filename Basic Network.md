@@ -199,15 +199,18 @@ nmcli device show wlp0s20f3 # Confirm DNS and method
 
 ## **Zones Overview**
 
-| Zone | Trust Level / Use |
-|------|-----------------|
-| public | Default, minimal trust |
-| home | Private, trusted home network |
-| work | Trusted office network |
-| internal | Semi-trusted internal network |
-| dmz | Public-facing servers |
-| trusted | Fully trusted, all traffic allowed |
-| drop | Drop all incoming connections |
+| Zone     | Trust Level  | Behavior                                                  |
+|----------|--------------|-----------------------------------------------------------|
+| drop     | Lowest       | Drops all incoming, no reply; only outgoing allowed.       |
+| block    | Very low     | Rejects incoming with ICMP error; only outgoing allowed.   |
+| public   | Low          | For use in public areas; only selected services allowed.   |
+| external | For NAT gateways | Similar to public, but enables masquerading.           |
+| internal | More trusted | For inside networks; more services allowed.                |
+| dmz      | Semi-trusted | For servers in DMZ; only specific services open.           |
+| work     | Medium trust | For work machines; more services like SSH/Samba allowed.   |
+| home     | Higher trust | For home networks; many services allowed.                  |
+| trusted  | Highest      | Accept all connections.                                    |
+
 
 
 ---
