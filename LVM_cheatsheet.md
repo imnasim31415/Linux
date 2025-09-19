@@ -151,14 +151,35 @@ sudo mount /dev/data_vg/data_lv /mnt/data
 echo '/dev/data_vg/data_lv /mnt/data xfs defaults 0 0' | sudo tee -a /etc/fstab
 ```
 
-### Scenario:
+### Scenario: Extending Root Partition
 
-Root partition is full. You have free space in VG rhel. You want to add 1GB more to `rhel-root`.
+**Problem:** Root partition full; free space exists in VG `rhel`.
 
 ```bash
+# Check LV and filesystem sizes
+lsblk /
+df -h /
+
+# Extend LV by 1G
 sudo lvextend -L +1G /dev/rhel/root
+
+# Check LV size (lsblk shows updated LV)
+lsblk /
+
+# Resize filesystem (XFS) to use new LV space
 sudo xfs_growfs /
+
+# Check filesystem size
+df -h /
 ```
+
+**Notes:**
+
+* `lsblk` shows **LV size** (block device).
+* `df -h` shows **filesystem size** and usage.
+* `lvextend` enlarges the LV, `xfs_growfs` resizes the filesystem.
+* Filesystem must be resized after LV extend to use additional space.
+
 
 ### Scenario:
 
