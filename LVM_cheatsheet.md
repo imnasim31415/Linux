@@ -134,6 +134,7 @@ server:/export/data /mnt/data nfs defaults,_netdev 0 0
 | `lvdisplay`, `vgdisplay`, `pvdisplay`   | Detailed information about LVM components             |
 | `file -s /dev/<vg>/<lv>`                | Check if a device has a filesystem                    |
 | `xfs_growfs /mount/point`               | Resize XFS filesystem after LV expansion              |
+| `resize2fs /dev/mapper/vg_name-lv_name` | Resize EXT4 filesystem after LV expansion             |
 | `findmnt`                               | Show where devices are mounted                        |
 | `ls -l /dev/mapper/`                    | View symlinks to LVM device-mapper files              |
 
