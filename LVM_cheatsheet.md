@@ -225,6 +225,7 @@ sudo mount /dev/rhel/lv_log /var/log
 # Check current LV and filesystem sizes
 lsblk /dev/mapper/vg_storage-lv_docs  # Shows LV size
 df -h /mnt/docs                       # Shows filesystem size and usage
+findmnt /mnt/docs                     # shows filesystem type (XFS or EXT4)
 
 # Unmount the filesystem before shrinking
 sudo umount /mnt/docs
