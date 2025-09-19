@@ -209,3 +209,54 @@ sudo cp -a /var/log/* /mnt/log/
 sudo umount /mnt/log
 sudo mount /dev/rhel/lv_log /var/log
 ```
+
+### Scenario: Reducing a Logical Volume
+
+**Problem:** You want to reduce the size of a logical volume safely without losing data.
+
+* **ext4 filesystem:** You can shrink the filesystem before reducing the LV.
+* **XFS filesystem:** XFS **cannot be shrunk**. To reduce an XFS LV, you must backup the data, recreate the LV at smaller size, and restore the data.
+
+```bash
+# -----------------------------
+# Example: Reducing ext4 LV
+# -----------------------------
+
+# Check current LV and filesystem sizes
+lsblk /dev/mapper/vg_storage-lv_docs  # Shows LV size
+df -h /mnt/docs                       # Shows filesystem size and usage
+
+# Unmount the filesystem before shrinking
+sudo umount /mnt/docs
+
+# Check and repair the filesystem (recommended)
+sudo e2fsck -f /dev/mapper/vg_storage-lv_docs
+
+# Resize the filesystem to the target size (must be smaller than LV)
+sudo resize2fs /dev/mapper/vg_storage-lv_docs 400M
+
+# Reduce the LV to match the filesystem size
+sudo lvreduce -L 400M /dev/mapper/vg_storage-lv_docs
+
+# Mount the filesystem again
+sudo mount /mnt/docs
+
+# Verify LV and filesystem sizes
+lsblk /dev/mapper/vg_storage-lv_docs
+df -h /mnt/docs
+
+# -----------------------------
+# Notes for XFS
+# -----------------------------
+# - XFS cannot be reduced.
+# - To reduce an XFS LV:
+#   1. Backup data.
+#   2. Remove and recreate the LV with smaller size.
+#   3. Restore data from backup.
+
+# Notes:
+# - Always shrink filesystem first, then LV (for ext4).
+# - Backup important data before shrinking.
+# - For ext4, 'lvreduce --resizefs' can shrink both in one step.
+```
+
