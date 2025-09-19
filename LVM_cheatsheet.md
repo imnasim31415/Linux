@@ -151,8 +151,8 @@ sudo mkdir /mnt/data
 sudo mount /dev/data_vg/data_lv /mnt/data
 echo '/dev/data_vg/data_lv /mnt/data xfs defaults 0 0' | sudo tee -a /etc/fstab
 ```
-
-### Scenario: Extending Root Partition
+---
+## Scenario: Extending Root Partition
 
 **Problem:** Root partition full; free space exists in VG `rhel`.
 
@@ -183,9 +183,9 @@ df -h /
 * `df -h` shows **filesystem size** and usage.
 * `lvextend` enlarges the LV, `xfs_growfs` resizes the filesystem.
 * Filesystem must be resized after LV extend to use additional space.
+---
 
-
-### Scenario:
+## Scenario: LV extend
 
 You ran out of space on `/home`. You added a new disk (`/dev/sdc`) and want to extend the current logical volume.
 
@@ -195,8 +195,8 @@ sudo vgextend rhel /dev/sdc
 sudo lvextend -L +2G /dev/rhel/root
 sudo xfs_growfs /
 ```
-
-### Scenario: Create Separate Mount Point for Logs
+---
+## Scenario: Create Separate Mount Point for Logs
 
 You want `/var/log` to be on its own LV to avoid filling up /.
 
@@ -209,8 +209,8 @@ sudo cp -a /var/log/* /mnt/log/
 sudo umount /mnt/log
 sudo mount /dev/rhel/lv_log /var/log
 ```
-
-### Scenario: Reducing a Logical Volume
+---
+## Scenario: Reducing a Logical Volume
 
 **Problem:** You want to reduce the size of a logical volume safely without losing data.
 
