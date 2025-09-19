@@ -19,6 +19,95 @@
 
 ---
 
+## PV → VG → LV Lifecycle
+
+* **PV (Physical Volume)**
+
+  * Create: `pvcreate /dev/sdX1`
+  * Uses an **existing block device** (`/dev/sdX1`). `pvcreate` writes LVM metadata to the device. it does **not** create a new `/dev/*` file.
+  * ✅ Shows up in `/dev` only because the disk/partition already existed.
+
+* **VG (Volume Group)**
+
+  * Create: `vgcreate my_vg /dev/sdX1`
+  * A **metadata container** that aggregates PVs into a pool.
+  * ❌ **Does not** create a block device under `/dev` (VG is not a device itself).
+
+* **LV (Logical Volume)**
+
+  * Create: `lvcreate -n my_lv -L 500M my_vg`
+  * **Creates real virtual block devices** used for filesystems and mounting.
+  * Paths created:
+
+    * `/dev/my_vg/my_lv` → **symlink** (convenience path)
+    * `/dev/mapper/my_vg-my_lv` → **actual device node** created by device-mapper
+
+> May use **either** `/dev/my_vg/my_lv` or `/dev/mapper/my_vg-my_lv` for `mkfs`, `mount`, `fsck`, etc.
+```bash
+mount /dev/my_vg/my_lv /mnt/docs
+mount /dev/mapper/my_vg-my_lv /mnt/docs
+```
+
+
+---
+## /etc/fstab — Persistent Mounts
+
+* **Purpose:** Automatically mount filesystems at boot.
+* **Basic syntax:**
+
+```text
+<file system> <mount point> <type> <options> <dump> <pass>
+```
+
+| Field           | Description                                            |
+| --------------- | ------------------------------------------------------ |
+| `<file system>` | Device path, LV, or UUID (recommended)                 |
+| `<mount point>` | Directory to mount the filesystem                      |
+| `<type>`        | Filesystem type (e.g., ext4, xfs, btrfs)               |
+| `<options>`     | Mount options (e.g., defaults, noatime, ro, rw, user)  |
+| `<dump>`        | Backup utility flag (0 = skip, 1 = backup)             |
+| `<pass>`        | fsck order at boot (0 = skip, 1 = root fs, 2 = others) |
+
+* **Recommended:** Use UUID for persistent mounts, because device names can change:
+
+```bash
+blkid /dev/vg_storage/lv_docs
+# Example output: /dev/vg_storage/lv_docs: UUID="abcd-1234" TYPE="ext4"
+```
+
+```text
+UUID=abcd-1234 /mnt/docs ext4 defaults 0 0
+```
+
+* **Options examples:**
+
+  * `defaults` → standard read/write mount with typical options
+  * `ro` → read-only mount
+  * `noatime` → do not update access times, improves performance
+  * `user` → allow non-root user to mount
+  * `rw,relatime` → read/write with relative atime updates
+
+* **Example with LVM:**
+
+```text
+# Using LV UUID for persistent mount
+UUID=abcd-1234 /mnt/docs ext4 defaults 0 0
+```
+
+* **Network filesystems:**
+
+```text
+# NFS example
+server:/export/data /mnt/data nfs defaults,_netdev 0 0
+```
+
+* Ensures the filesystem mounts correctly even if `/dev/vg_storage/lv_docs` is not ready at boot.
+* LVM volumes are normally activated automatically at boot with systemd (`lvm2-monitor.service`).
+* Troubleshooting tip: Use `mount -a` after editing `/etc/fstab` to check for errors before rebooting.
+---
+
+
+
 ## Useful Commands
 
 | Command                                 | Purpose                                               |
