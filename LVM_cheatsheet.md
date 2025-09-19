@@ -246,6 +246,9 @@ sudo mount /mnt/docs
 lsblk /dev/mapper/vg_storage-lv_docs
 df -h /mnt/docs
 
+# One-step shrink: automatically unmount, fsck, resize2fs, and lvreduce then remount
+sudo lvreduce --resizefs -L 400M /dev/mapper/vg_storage-lv_docs
+
 # -----------------------------
 # Notes for XFS
 # -----------------------------
