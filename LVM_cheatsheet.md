@@ -264,3 +264,28 @@ sudo lvreduce --resizefs -L 400M /dev/mapper/vg_storage-lv_docs
 # - For ext4, 'lvreduce --resizefs' can shrink both in one step.
 ```
 
+## Scenario — Migrate Data Between PVs
+
+You suspect `/dev/sdb1` might fail soon. Move all data from `/dev/sdb1` to `/dev/sdc1` inside the same `vg_storage` volume group, and then remove `/dev/sdb1` from the VG completely.
+
+---
+
+### ✅ Steps
+
+```bash
+# 1. Move all extents from /dev/sdb1 to /dev/sdc1
+sudo pvmove /dev/sdb1 /dev/sdc1
+
+# 2. Remove /dev/sdb1 from the VG
+sudo vgreduce vg_storage /dev/sdb1
+
+# 3. Wipe LVM metadata from /dev/sdb1
+sudo pvremove /dev/sdb1
+```
+
+**Result:**
+
+* All logical volumes remain intact and usable.
+* `/dev/sdb1` is no longer part of `vg_storage`.
+
+
