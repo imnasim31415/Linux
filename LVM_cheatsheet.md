@@ -169,6 +169,9 @@ lsblk /
 # Resize filesystem (XFS) to use new LV space
 sudo xfs_growfs /
 
+# Resize filesystem (EXT4) to use new LV space
+sudo resize2fs /dev/mapper/<vg_name>-<LV_name>
+
 # Check filesystem size
 df -h /
 ```
