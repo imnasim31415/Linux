@@ -8,6 +8,7 @@
 
   1. **Swap Partition**
   2. **Swap File**
+  3. **LVM-based Swap**
 * **Commands:**
 
   * View swap: `swapon --show` or `free -h`
@@ -61,19 +62,29 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 | Make swap permanent | Add entry to `/etc/fstab`                                             |
 | Change swap size    | For file: recreate file; For partition: use LVM or recreate partition |
 
-## 🔹 Difference: Physical Swap vs LVM Swap
+## 🔹 Difference: Physical Partition Swap vs LVM Swap vs Swap File
 
-* **Physical Swap Partition:**
+* **Physical Partition Swap:**
 
+  * Created directly on a disk partition.
   * Fixed size once created.
   * Resizing requires deleting/recreating partition.
-  * Suitable for small static setups.
+  * Simple and efficient, but inflexible.
 
 * **LVM-based Swap:**
 
+  * Swap created inside a logical volume.
   * Flexible: can resize using `lvextend` or `lvreduce`.
   * Managed under Volume Groups.
   * Preferred for enterprise setups and RHCSA exam tasks involving resizing.
+
+* **Swap File:**
+
+  * Regular file on an existing filesystem.
+  * Easiest to create and remove.
+  * Flexible (can recreate with different size).
+  * Requires proper permissions (`chmod 600`).
+  * May have slightly lower performance compared to partitions, but acceptable in most cases.
 
 ## 🔹 Understanding `/etc/fstab` Fields
 
@@ -175,3 +186,44 @@ echo '/dev/vg_name/lv_swap none swap sw 0 0' | sudo tee -a /etc/fstab
 ```
 
 > **Explanation:** LVM logical volume created, formatted as swap, activated, and made persistent.
+
+### Question 7
+
+**Task:** Temporarily add a 256MB swap file without reboot.
+**Answer:**
+
+```bash
+sudo fallocate -l 256M /tempswap
+sudo chmod 600 /tempswap
+sudo mkswap /tempswap
+sudo swapon /tempswap
+```
+
+> **Explanation:** No `/etc/fstab` entry means it will be gone after reboot.
+
+### Question 8
+
+**Task:** Increase swap size from 512MB to 2GB using a swap file.
+**Answer:**
+
+```bash
+sudo swapoff /swapfile
+sudo rm /swapfile
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
+
+> **Explanation:** Swap files cannot be resized directly; must be recreated with new size.
+
+### Question 9
+
+**Task:** System admin mistakenly created a swap file with wrong permissions. Fix it.
+**Answer:**
+
+```bash
+sudo chmod 600 /swapfile
+```
+
+> **Explanation:** Permissions must be strict (read/write only for root).
