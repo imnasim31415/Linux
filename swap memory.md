@@ -14,14 +14,13 @@
   * View swap: `swapon --show` or `free -h`
   * Enable swap: `swapon <device_or_file>`
   * Disable swap: `swapoff <device_or_file>`
-* **Persistence:** Add swap entry to `/etc/fstab` to enable on boot.
 
-## 🔹 Swap Partition Management
+## Swap Management
 
-### Create a Swap Partition
+### Create a Physical Swap Partition
 
 ```bash
-sudo fdisk /dev/sdb
+sudo fdisk /dev/sdb 
 # n -> new partition -> primary -> size
 # t -> type 82 (Linux swap)
 # w -> write changes
@@ -29,13 +28,12 @@ sudo mkswap /dev/sdb1
 sudo swapon /dev/sdb1
 ```
 
-### Make Persistent
-
-```bash
-echo '/dev/sdb1 none swap sw 0 0' | sudo tee -a /etc/fstab
+### Create a LVM Swap Partition
 ```
-
-## 🔹 Swap File Management
+sudo lvcreate -n lv_swap -L 1G /dev/<vg>
+sudo mkswap /dev/<vg>/lv_swap
+sudo swapon /dev/<vg>/lv_swap
+```
 
 ### Create a Swap File
 
@@ -45,17 +43,24 @@ sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 ```
+* **Persistence:** To enable swap automatically at boot, add an entry to `/etc/fstab`.  
+  - **Physical or LVM swap partition:**  
+    ```text
+    UUID=<swap-uuid> none swap defaults 0 0
+    ```
+  - **Swap file:**  
+    ```text
+    /swapfile none swap sw 0 0
+    ```
+*Note:* Swap files must be referenced by their path, not UUID. Swap partitions or LVM volumes can use either device path or UUID.
 
-### Make Persistent
 
-```bash
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-```
 
 ## 🔹 Quick Cheatsheet
 
 | Task                | Command                                                               |
 | ------------------- | --------------------------------------------------------------------- |
+| Creating Swap       | `mkswap /dev/sdX` or `mkswap /swapfile`                               |
 | Show swap           | `swapon --show` / `free -h`                                           |
 | Enable swap         | `swapon /dev/sdX` or `swapon /swapfile`                               |
 | Disable swap        | `swapoff /dev/sdX` or `swapoff /swapfile`                             |
@@ -97,7 +102,6 @@ Each line in `/etc/fstab` has 6 fields:
 * **sw 0 0:**
 
   * `sw` → option for swap type.
-  * `0 0` → dump and fsck not required.
 
 * **defaults 0 0:**
 
@@ -105,105 +109,71 @@ Each line in `/etc/fstab` has 6 fields:
   * `0` → do not dump.
   * `0` → do not fsck.
 
-## 🔹 Scenario-Based RHCSA Questions and Answers
+---
+## RHCSA Scenario-Based Questions
 
-### Question 1
+### Question 1: Physical Swap Partition
 
-**Task:** A system has low memory. Add a 1GB swap file and make it permanent.
+**Task:** A physical swap partition `/dev/sdb2` of 1GB exists but is not active. Activate it immediately and make it persistent across reboots.
 **Answer:**
 
 ```bash
-sudo fallocate -l 1G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+sudo swapon /dev/sdb2
+echo '/dev/sdb2 none swap sw 0 0' | sudo tee -a /etc/fstab
+swapon --show   # verify active
 ```
 
-> **Explanation:** Swap file of 1GB is created, secured, formatted, activated, and made persistent.
+> **Explanation:** Activates the physical partition and ensures persistence by adding it to `/etc/fstab`.
 
-### Question 2
+### Question 2: LVM-Based Swap
 
-**Task:** There is a swap partition `/dev/sdb2`. Disable it temporarily without reboot.
+**Task:** Create a 2GB swap using LVM on Volume Group `vg_data` with logical volume `lv_swap`, activate it, and ensure it persists.
 **Answer:**
 
 ```bash
-sudo swapoff /dev/sdb2
+sudo lvcreate -L 2G -n lv_swap vg_data
+sudo mkswap /dev/vg_data/lv_swap
+sudo swapon /dev/vg_data/lv_swap
+echo '/dev/vg_data/lv_swap none swap sw 0 0' | sudo tee -a /etc/fstab
+swapon --show   # verify active
 ```
 
-> **Explanation:** Swapoff deactivates swap temporarily. Reboot will reactivate it if in `/etc/fstab`.
+> **Explanation:** Demonstrates LVM swap creation, activation, and persistence. LVM allows flexible resizing in the future.
 
-### Question 3
+### Question 3: Swap File
 
-**Task:** Verify all swap memory currently in use and the free swap available.
+**Task:** System memory is low. Create a 1.5GB swap file in `/home`, activate it, and make it permanent.
 **Answer:**
 
 ```bash
-swapon --show
-free -h
+sudo fallocate -l 1.5G /home/swapfile
+sudo chmod 600 /home/swapfile
+sudo mkswap /home/swapfile
+sudo swapon /home/swapfile
+echo '/home/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+swapon --show   # verify active
 ```
 
-> **Explanation:** Shows active swap devices/files and memory usage.
+> **Explanation:** Swap file creation, secure permissions, activation, and persistence.
 
-### Question 4
+### Question 4: Resize LVM Swap
 
-**Task:** Replace an existing 512MB swap file with a new 1GB swap file.
+**Task:** Increase the LVM-based swap logical volume `lv_swap` from 2GB to 3GB and ensure it is active.
 **Answer:**
 
 ```bash
-sudo swapoff /swapfile
-sudo rm /swapfile
-sudo fallocate -l 1G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
+sudo swapoff /dev/vg_data/lv_swap
+sudo lvextend -L +1G /dev/vg_data/lv_swap
+sudo mkswap /dev/vg_data/lv_swap
+sudo swapon /dev/vg_data/lv_swap
+swapon --show   # verify active
 ```
 
-> **Explanation:** Swap file must be deactivated before removal and recreation.
+> **Explanation:** LVM swap resizing requires deactivation, logical volume extension, reformatting, and reactivation.
 
-### Question 5
+### Question 5: Replace Swap File with Larger Size
 
-**Task:** A newly added swap partition is not enabled after reboot. Make it active automatically on boot.
-**Answer:**
-
-```bash
-echo '/dev/sdb3 none swap sw 0 0' | sudo tee -a /etc/fstab
-sudo swapon -a
-```
-
-> **Explanation:** Entry in `/etc/fstab` ensures automatic activation; `swapon -a` activates all swap immediately.
-
-### Question 6
-
-**Task:** On a system with LVM, add a new 2GB logical volume and use it as swap.
-**Answer:**
-
-```bash
-sudo lvcreate -L 2G -n lv_swap vg_name
-sudo mkswap /dev/vg_name/lv_swap
-sudo swapon /dev/vg_name/lv_swap
-echo '/dev/vg_name/lv_swap none swap sw 0 0' | sudo tee -a /etc/fstab
-```
-
-> **Explanation:** LVM logical volume created, formatted as swap, activated, and made persistent.
-
-### Question 7
-
-**Task:** Temporarily add a 256MB swap file without reboot.
-**Answer:**
-
-```bash
-sudo fallocate -l 256M /tempswap
-sudo chmod 600 /tempswap
-sudo mkswap /tempswap
-sudo swapon /tempswap
-```
-
-> **Explanation:** No `/etc/fstab` entry means it will be gone after reboot.
-
-### Question 8
-
-**Task:** Increase swap size from 512MB to 2GB using a swap file.
+**Task:** Replace existing 512MB swap file `/swapfile` with 2GB swap file without reboot.
 **Answer:**
 
 ```bash
@@ -213,17 +183,22 @@ sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
+swapon --show   # verify active
 ```
 
-> **Explanation:** Swap files cannot be resized directly; must be recreated with new size.
+> **Explanation:** Swap files cannot be resized in place; must deactivate, remove, recreate with new size, and reactivate.
 
-### Question 9
+### Question 6: Disable All Swap Except Physical Partition
 
-**Task:** System admin mistakenly created a swap file with wrong permissions. Fix it.
+**Task:** Disable all swaps except physical partition `/dev/sdb2`.
 **Answer:**
 
 ```bash
-sudo chmod 600 /swapfile
+sudo swapoff -a
+sudo swapon /dev/sdb2
+swapon --show   # verify only /dev/sdb2 is active
 ```
 
-> **Explanation:** Permissions must be strict (read/write only for root).
+> **Explanation:** Demonstrates selective swap activation; ensures only the physical partition swap is active.
+
+> **Note:** These six scenarios cover **all swap types** (physical partition, LVM-based, swap file) including creation, activation, persistence, resizing, replacement, and selective enabling for RHCSA exam practice.
