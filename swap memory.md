@@ -61,6 +61,39 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 | Make swap permanent | Add entry to `/etc/fstab`                                             |
 | Change swap size    | For file: recreate file; For partition: use LVM or recreate partition |
 
+## 🔹 Difference: Physical Swap vs LVM Swap
+
+* **Physical Swap Partition:**
+
+  * Fixed size once created.
+  * Resizing requires deleting/recreating partition.
+  * Suitable for small static setups.
+
+* **LVM-based Swap:**
+
+  * Flexible: can resize using `lvextend` or `lvreduce`.
+  * Managed under Volume Groups.
+  * Preferred for enterprise setups and RHCSA exam tasks involving resizing.
+
+## 🔹 Understanding `/etc/fstab` Fields
+
+Each line in `/etc/fstab` has 6 fields:
+
+```
+<Device>   <Mount Point>   <Type>   <Options>   <Dump>   <Pass>
+```
+
+* **sw 0 0:**
+
+  * `sw` → option for swap type.
+  * `0 0` → dump and fsck not required.
+
+* **defaults 0 0:**
+
+  * `defaults` → standard mount options (`rw, suid, dev, exec, auto, nouser, async`).
+  * `0` → do not dump.
+  * `0` → do not fsck.
+
 ## 🔹 Scenario-Based RHCSA Questions and Answers
 
 ### Question 1
