@@ -203,3 +203,64 @@ SELinux enforces **mandatory, fine-grained access control** beyond DAC. It:
 * Provides detailed audit visibility.
 
 👉 Think of SELinux as a **kernel-level security guard** protecting your system, even when root or DAC fails.
+
+
+---
+
+# Kernel Runtime Parameters with `sysctl`
+
+Linux exposes many kernel runtime parameters via the `/proc/sys/` interface. The `sysctl` command provides a convenient way to view and modify them.
+
+
+## 1. Viewing Kernel Parameters
+
+- **View all parameters:** `sysctl -a`
+
+* **Filter/search specific parameter:** `sysctl -a | grep vm.swappiness`
+
+* **Check a single parameter:** `sysctl vm.swappiness`
+
+---
+
+## 2. Changing Kernel Parameters (Non-Persistent)
+
+* **Set a value at runtime:** `sudo sysctl -w vm.swappiness=50`
+
+
+👉 These changes are **immediate** but **lost after reboot**.
+
+---
+
+## 3. Making Changes Persistent
+
+### Method 1: `/etc/sysctl.conf`
+
+* Edit the file: `sudo nano /etc/sysctl.conf`
+
+* Add your parameter(s): `vm.swappiness = 50`
+
+* Reload: `sudo sysctl -p`
+
+### Method 2: `/etc/sysctl.d/`
+
+* Create a custom config file: `sudo nano /etc/sysctl.d/99-custom.conf`
+
+* Add parameters: `vm.swappiness = 50`
+
+* Apply changes: `sudo sysctl --system`
+
+---
+
+## 4. Summary
+
+| Action                   | Command/Method                                | Persistence |
+| ------------------------ | --------------------------------------------- | ----------- |
+| List all parameters      | `sysctl -a`                                   | N/A         |
+| View specific parameter  | `sysctl vm.swappiness`                        | N/A         |
+| Temporary change         | `sysctl -w key=value`                         | No          |
+| Permanent change         | Add to `/etc/sysctl.conf` or `/etc/sysctl.d/` | Yes         |
+| Apply config immediately | `sysctl -p` or `sysctl --system`              | Yes         |
+
+```
+```
+
