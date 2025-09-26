@@ -261,6 +261,77 @@ Linux exposes many kernel runtime parameters via the `/proc/sys/` interface. The
 | Permanent change         | Add to `/etc/sysctl.conf` or `/etc/sysctl.d/` | Yes         |
 | Apply config immediately | `sysctl -p` or `sysctl --system`              | Yes         |
 
+
+
+
+# `chcon` Command (SELinux)
+
+`chcon` changes the SELinux security context of files or directories **temporarily**.
+
+---
+
+## Syntax
+```bash
+chcon [OPTION] CONTEXT FILE
+````
+
+* CONTEXT → `user:role:type:level`
+* FILE → Target file/directory
+
+
+## Examples
+
+### 1. Change SELinux type of a file
+
+```bash
+ls -Z index.html
+sudo chcon -t httpd_sys_content_t index.html
+ls -Z index.html
 ```
+
+### 2. Apply recursively to a directory
+
+```bash
+sudo chcon -R -t httpd_sys_content_t /var/www/html/
 ```
+
+### 3. Restore default context
+
+```bash
+sudo restorecon -Rv /var/www/html/
+```
+
+### 4. Change parts of the context
+
+```bash
+sudo chcon -u system_u file.txt   # user
+sudo chcon -r object_r file.txt   # role
+sudo chcon -t samba_share_t file  # type
+sudo chcon -l s0 file.txt         # level
+```
+
+---
+
+## Notes
+
+* `chcon` changes are **not persistent**.
+* For permanent changes, use:
+
+```bash
+semanage fcontext -a -t type '/path(/.*)?'
+restorecon -Rv /path
+```
+
+---
+
+## Quick Reference
+
+| Command                                | Purpose                 |
+| -------------------------------------- | ----------------------- |
+| `ls -Z file`                           | View context            |
+| `chcon -t type file`                   | Change type             |
+| `chcon -R -t type dir/`                | Change type recursively |
+| `restorecon -Rv dir/`                  | Restore defaults        |
+| `semanage fcontext ...` + `restorecon` | Persistent change       |
+
 
