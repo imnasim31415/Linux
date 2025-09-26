@@ -16,9 +16,9 @@ SELinux (Security-Enhanced Linux) is a **mandatory access control (MAC) system**
 
 * **Context (Label):** `user:role:type:level`
 
-  * **User:** SELinux user (e.g., system\_u, unconfined\_u)
-  * **Role:** Defines allowed domains (e.g., system\_r, object\_r)
-  * **Type (Domain):** Most important; controls access (e.g., httpd\_t, sshd\_t)
+  * **User:** SELinux user (e.g., system_u, unconfined_u)
+  * **Role:** Defines allowed domains (e.g., system_r, object_r)
+  * **Type (Domain):** Most important; controls access (e.g., httpd_t, sshd_t)
   * **Level (MLS/MCS):** Security level (e.g., s0)
 * **Policy:** Rules defining allowed access between domains and types.
 * **Booleans:** Runtime toggles for policy features (e.g., allowing HTTP to connect to DB).
@@ -33,51 +33,7 @@ SELinux (Security-Enhanced Linux) is a **mandatory access control (MAC) system**
 
 ## 2. Practical Use Cases & Real-World Scenarios
 
-### 2.1 Managing Process Contexts
-
-**Task:** Save SELinux label of `sshd` to a file.
-
-```bash
-ps -eZ | grep sshd | awk '{print $1}' > /home/bob/sshd
-cat /home/bob/sshd
-```
-
-**Use Case:** Verify SSHD domain for troubleshooting.
-
-### 2.2 File Context Management
-
-**Scenario:** Apache cannot read `/var/index.html`
-
-* **Temporary fix:**
-
-```bash
-sudo chcon -t httpd_sys_content_t /var/index.html
-```
-
-* **Permanent fix:**
-
-```bash
-sudo semanage fcontext -a -t httpd_sys_content_t "/var/index.html"
-sudo restorecon -v /var/index.html
-```
-
-### 2.3 Changing Modes
-
-```bash
-sudo setenforce 0   # permissive
-getenforce
-```
-
-Permanent mode is set in `/etc/selinux/config`.
-
-### 2.4 Identifying SELinux Roles
-
-```bash
-semanage user -l | awk '/^xguest_u/ {print $3}' > /home/bob/serole
-cat /home/bob/serole
-```
-
-### 2.5 Real-World Scenarios
+### 2.1 Real-World Scenarios
 
 #### Scenario 1: Apache Serving Web Pages
 
@@ -204,40 +160,36 @@ SELinux enforces **mandatory, fine-grained access control** beyond DAC. It:
 
 👉 Think of SELinux as a **kernel-level security guard** protecting your system, even when root or DAC fails.
 
-
 ---
 
-
-## Kernel Runtime Parameters with `sysctl`
+## 5. Kernel Runtime Parameters with `sysctl`
 
 The `sysctl` command lets you **view and change kernel runtime parameters** exposed via `/proc/sys/`.
 
-| Command/Method                              | Purpose                               | Persistence |
-|---------------------------------------------|---------------------------------------|-------------|
-| `sysctl -a`                                 | List all kernel parameters            | N/A         |
-| `sysctl -a \| grep vm.swappiness`           | Search specific parameter             | N/A         |
-| `sysctl vm.swappiness`                      | View a single parameter               | N/A         |
-| `sudo sysctl -w vm.swappiness=50`           | Temporary change at runtime           | No          |
-| Edit `/etc/sysctl.conf` and add `key=value` | Make parameter persistent             | Yes         |
-| Create `/etc/sysctl.d/99-custom.conf`       | Add persistent custom configuration   | Yes         |
-| `sudo sysctl -p`                            | Reload `/etc/sysctl.conf`             | Yes         |
-| `sudo sysctl --system`                      | Reload all configs from `/etc/sysctl.d/` | Yes      |
+| Command/Method                              | Purpose                                  | Persistence |
+| ------------------------------------------- | ---------------------------------------- | ----------- |
+| `sysctl -a`                                 | List all kernel parameters               | N/A         |
+| `sysctl -a \| grep vm.swappiness`           | Search specific parameter                | N/A         |
+| `sysctl vm.swappiness`                      | View a single parameter                  | N/A         |
+| `sudo sysctl -w vm.swappiness=50`           | Temporary change at runtime              | No          |
+| Edit `/etc/sysctl.conf` and add `key=value` | Make parameter persistent                | Yes         |
+| Create `/etc/sysctl.d/99-custom.conf`       | Add persistent custom configuration      | Yes         |
+| `sudo sysctl -p`                            | Reload `/etc/sysctl.conf`                | Yes         |
+| `sudo sysctl --system`                      | Reload all configs from `/etc/sysctl.d/` | Yes         |
 
+### Notes
 
-## Notes
-- Runtime changes with `sysctl -w` are **lost after reboot**.
-- Use `/etc/sysctl.conf` or `/etc/sysctl.d/` for **persistent** changes.
-
+* Runtime changes with `sysctl -w` are **lost after reboot**.
+* Use `/etc/sysctl.conf` or `/etc/sysctl.d/` for **persistent** changes.
 
 ---
 
-
-## `chcon` Command (SELinux)
+## 6. `chcon` Command (SELinux)
 
 `chcon` changes the SELinux security context of files or directories **temporarily**.
 
 | Command                                      | Purpose                        |
-|----------------------------------------------|--------------------------------|
+| -------------------------------------------- | ------------------------------ |
 | `ls -Z file`                                 | View SELinux context           |
 | `chcon -t httpd_sys_content_t index.html`    | Change type of a file          |
 | `chcon -R -t httpd_sys_content_t /var/www/`  | Recursively change type        |
@@ -249,40 +201,40 @@ The `sysctl` command lets you **view and change kernel runtime parameters** expo
 | `semanage fcontext -a -t type '/path(/.*)?'` | Define persistent context rule |
 | `restorecon -Rv /path`                       | Apply persistent context       |
 
+### Notes
+
+* `chcon` changes are **temporary**.
+* Use `semanage fcontext` + `restorecon` for **persistent** changes.
 
 ---
 
-## Notes
-- `chcon` changes are **temporary**.
-- Use `semanage fcontext` + `restorecon` for **persistent** changes.
-
-
----
-# SELinux Boot-Time Settings
+## 7. SELinux Boot-Time Settings
 
 SELinux behavior can be controlled at boot via **kernel parameters** or the config file.
-| Mode | Behavior | Use Case |
-|-------------|--------------------------------------------------------------------------|-----------------------------------|
-| **Enforcing** | SELinux policies are **enforced**. Unauthorized access is blocked and logged. | Default/production systems. |
-| **Permissive**| SELinux policies are **not enforced**. Violations are only logged. | Troubleshooting & policy testing. |
-| **Disabled** | SELinux is completely turned off. No enforcement or logging. | Rarely recommended; last resort. |
 
-## Kernel Boot Parameters (GRUB)
+| Mode           | Behavior                                                                      | Use Case                          |
+| -------------- | ----------------------------------------------------------------------------- | --------------------------------- |
+| **Enforcing**  | SELinux policies are **enforced**. Unauthorized access is blocked and logged. | Default/production systems.       |
+| **Permissive** | SELinux policies are **not enforced**. Violations are only logged.            | Troubleshooting & policy testing. |
+| **Disabled**   | SELinux is completely turned off. No enforcement or logging.                  | Rarely recommended; last resort.  |
+
+### Kernel Boot Parameters (GRUB)
 
 Edit GRUB at boot (press `e` on the kernel line) or modify `/etc/default/grub`:
 
-| Parameter      | Purpose                                  |
-|----------------|------------------------------------------|
-| `enforcing=0`  | Boot with SELinux in **permissive** mode |
-| `selinux=0`    | **Completely disable** SELinux           |
-| `autorelabel=1`| Force filesystem **relabeling** at boot  |
+| Parameter       | Purpose                                  |
+| --------------- | ---------------------------------------- |
+| `enforcing=0`   | Boot with SELinux in **permissive** mode |
+| `selinux=0`     | **Completely disable** SELinux           |
+| `autorelabel=1` | Force filesystem **relabeling** at boot  |
 
 Update GRUB config after editing:
+
 ```bash
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-````
+```
 
-## Config File Method
+### Config File Method
 
 Persistent mode can also be set in `/etc/selinux/config`:
 
@@ -290,7 +242,7 @@ Persistent mode can also be set in `/etc/selinux/config`:
 SELINUX=enforcing   # or permissive/disabled
 ```
 
-## Notes
+### Notes
 
 * `setenforce` changes are temporary.
 * Boot parameters (`selinux=0`, `enforcing=0`) override config.
