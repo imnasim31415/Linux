@@ -207,131 +207,91 @@ SELinux enforces **mandatory, fine-grained access control** beyond DAC. It:
 
 ---
 
-# Kernel Runtime Parameters with `sysctl`
 
-Linux exposes many kernel runtime parameters via the `/proc/sys/` interface. The `sysctl` command provides a convenient way to view and modify them.
+## Kernel Runtime Parameters with `sysctl`
+
+The `sysctl` command lets you **view and change kernel runtime parameters** exposed via `/proc/sys/`.
+
+| Command/Method                              | Purpose                               | Persistence |
+|---------------------------------------------|---------------------------------------|-------------|
+| `sysctl -a`                                 | List all kernel parameters            | N/A         |
+| `sysctl -a \| grep vm.swappiness`           | Search specific parameter             | N/A         |
+| `sysctl vm.swappiness`                      | View a single parameter               | N/A         |
+| `sudo sysctl -w vm.swappiness=50`           | Temporary change at runtime           | No          |
+| Edit `/etc/sysctl.conf` and add `key=value` | Make parameter persistent             | Yes         |
+| Create `/etc/sysctl.d/99-custom.conf`       | Add persistent custom configuration   | Yes         |
+| `sudo sysctl -p`                            | Reload `/etc/sysctl.conf`             | Yes         |
+| `sudo sysctl --system`                      | Reload all configs from `/etc/sysctl.d/` | Yes      |
 
 
-## 1. Viewing Kernel Parameters
+## Notes
+- Runtime changes with `sysctl -w` are **lost after reboot**.
+- Use `/etc/sysctl.conf` or `/etc/sysctl.d/` for **persistent** changes.
 
-- **View all parameters:** `sysctl -a`
-
-* **Filter/search specific parameter:** `sysctl -a | grep vm.swappiness`
-
-* **Check a single parameter:** `sysctl vm.swappiness`
 
 ---
 
-## 2. Changing Kernel Parameters (Non-Persistent)
 
-* **Set a value at runtime:** `sudo sysctl -w vm.swappiness=50`
-
-
-👉 These changes are **immediate** but **lost after reboot**.
-
----
-
-## 3. Making Changes Persistent
-
-### Method 1: `/etc/sysctl.conf`
-
-* Edit the file: `sudo nano /etc/sysctl.conf`
-
-* Add your parameter(s): `vm.swappiness = 50`
-
-* Reload: `sudo sysctl -p`
-
-### Method 2: `/etc/sysctl.d/`
-
-* Create a custom config file: `sudo nano /etc/sysctl.d/99-custom.conf`
-
-* Add parameters: `vm.swappiness = 50`
-
-* Apply changes: `sudo sysctl --system`
-
----
-
-## 4. Summary
-
-| Action                   | Command/Method                                | Persistence |
-| ------------------------ | --------------------------------------------- | ----------- |
-| List all parameters      | `sysctl -a`                                   | N/A         |
-| View specific parameter  | `sysctl vm.swappiness`                        | N/A         |
-| Temporary change         | `sysctl -w key=value`                         | No          |
-| Permanent change         | Add to `/etc/sysctl.conf` or `/etc/sysctl.d/` | Yes         |
-| Apply config immediately | `sysctl -p` or `sysctl --system`              | Yes         |
-
-
-
-
-# `chcon` Command (SELinux)
+## `chcon` Command (SELinux)
 
 `chcon` changes the SELinux security context of files or directories **temporarily**.
 
----
+| Command                                      | Purpose                        |
+|----------------------------------------------|--------------------------------|
+| `ls -Z file`                                 | View SELinux context           |
+| `chcon -t httpd_sys_content_t index.html`    | Change type of a file          |
+| `chcon -R -t httpd_sys_content_t /var/www/`  | Recursively change type        |
+| `restorecon -Rv /var/www/`                   | Restore default context        |
+| `chcon -u system_u file.txt`                 | Change SELinux user            |
+| `chcon -r object_r file.txt`                 | Change SELinux role            |
+| `chcon -t samba_share_t file.txt`            | Change SELinux type            |
+| `chcon -l s0 file.txt`                       | Change SELinux level           |
+| `semanage fcontext -a -t type '/path(/.*)?'` | Define persistent context rule |
+| `restorecon -Rv /path`                       | Apply persistent context       |
 
-## Syntax
-```bash
-chcon [OPTION] CONTEXT FILE
-````
-
-* CONTEXT → `user:role:type:level`
-* FILE → Target file/directory
-
-
-## Examples
-
-### 1. Change SELinux type of a file
-
-```bash
-ls -Z index.html
-sudo chcon -t httpd_sys_content_t index.html
-ls -Z index.html
-```
-
-### 2. Apply recursively to a directory
-
-```bash
-sudo chcon -R -t httpd_sys_content_t /var/www/html/
-```
-
-### 3. Restore default context
-
-```bash
-sudo restorecon -Rv /var/www/html/
-```
-
-### 4. Change parts of the context
-
-```bash
-sudo chcon -u system_u file.txt   # user
-sudo chcon -r object_r file.txt   # role
-sudo chcon -t samba_share_t file  # type
-sudo chcon -l s0 file.txt         # level
-```
 
 ---
 
 ## Notes
+- `chcon` changes are **temporary**.
+- Use `semanage fcontext` + `restorecon` for **persistent** changes.
 
-* `chcon` changes are **not persistent**.
-* For permanent changes, use:
-
-```bash
-semanage fcontext -a -t type '/path(/.*)?'
-restorecon -Rv /path
-```
 
 ---
+# SELinux Boot-Time Settings
 
-## Quick Reference
+SELinux behavior can be controlled at boot via **kernel parameters** or the config file.
+| Mode | Behavior | Use Case |
+|-------------|--------------------------------------------------------------------------|-----------------------------------|
+| **Enforcing** | SELinux policies are **enforced**. Unauthorized access is blocked and logged. | Default/production systems. |
+| **Permissive**| SELinux policies are **not enforced**. Violations are only logged. | Troubleshooting & policy testing. |
+| **Disabled** | SELinux is completely turned off. No enforcement or logging. | Rarely recommended; last resort. |
 
-| Command                                | Purpose                 |
-| -------------------------------------- | ----------------------- |
-| `ls -Z file`                           | View context            |
-| `chcon -t type file`                   | Change type             |
-| `chcon -R -t type dir/`                | Change type recursively |
-| `restorecon -Rv dir/`                  | Restore defaults        |
-| `semanage fcontext ...` + `restorecon` | Persistent change       |
+## Kernel Boot Parameters (GRUB)
 
+Edit GRUB at boot (press `e` on the kernel line) or modify `/etc/default/grub`:
 
+| Parameter      | Purpose                                  |
+|----------------|------------------------------------------|
+| `enforcing=0`  | Boot with SELinux in **permissive** mode |
+| `selinux=0`    | **Completely disable** SELinux           |
+| `autorelabel=1`| Force filesystem **relabeling** at boot  |
+
+Update GRUB config after editing:
+```bash
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+````
+
+## Config File Method
+
+Persistent mode can also be set in `/etc/selinux/config`:
+
+```conf
+SELINUX=enforcing   # or permissive/disabled
+```
+
+## Notes
+
+* `setenforce` changes are temporary.
+* Boot parameters (`selinux=0`, `enforcing=0`) override config.
+* `autorelabel=1` is useful when SELinux labels are inconsistent.
