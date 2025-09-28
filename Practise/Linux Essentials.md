@@ -1,158 +1,315 @@
-# Linux Essentials – Practice Q&A (Simple → Medium → Hard)
+# Linux Essentials – Practice Q&A
 
-This guide contains **practice questions and answers** based on common Linux tools and commands.  
-Use it to drill yourself for exams or real-world scenarios.
-
----
-
-## 🔹 Part 1: Practice Questions
-
-### **Basics (Simple)**
-1. Which command shows the current working directory?  
-2. How do you list all hidden files in a directory?  
-3. What does `cd -` do?  
-4. Which command shows the username of the current shell session?  
-5. What is the difference between `who` and `whoami`?  
-6. How do you clear the terminal screen?  
-7. Which command shows the system uptime?  
-8. How do you show all groups the current user belongs to?  
-9. What’s the difference between `last` and `lastb`?  
-10. What does `uname -a` display?  
-
-### **Intermediate**
-11. Write the command to view the hostname and then change it to `server1`.  
-12. Which command lists all available time zones?  
-13. How do you set the system timezone to `Asia/Dhaka`?  
-14. How do you check the path of a command (e.g., `ls`)?  
-15. Which command shows details about USB devices?  
-16. Which command lists CPU details?  
-17. What’s the difference between `gzip file.txt` and `bzip2 file.txt`?  
-18. Write the tar command to create an archive `backup.tar` of `/home/user/`.  
-19. Extract the archive `backup.tar.gz`.  
-20. What’s the difference between `tar -cvf` and `tar -rvf`?  
-
-### **I/O Redirection**
-21. Redirect the output of `ls -l` to a file `files.txt`.  
-22. Append the output of `pwd` to the file `files.txt`.  
-23. Redirect only error messages of `ls /no/such/dir` into `error.txt`.  
-24. Redirect both stdout and stderr of `echo hello` into `all.txt`.  
-25. Read the content of `/etc/passwd` using input redirection with `cat`.  
-
-### **Text Searching & Regex**
-26. Find lines containing `root` in `/etc/passwd`.  
-27. Find lines starting with `user100` in `/etc/passwd`.  
-28. Find lines ending with `/bin/bash` in `/etc/passwd`.  
-29. Use grep to search case-insensitively for the word “nasim” in `/etc/hosts`.  
-30. What does `grep -v nasim /etc/passwd` do?  
-
-### **SSH & Remote Access**
-31. Write the SSH command to log in as user `admin` to host `192.168.1.10`.  
-32. How do you generate SSH keys?  
-33. Which command copies your SSH key to a remote host?  
-34. Where are SSH keys stored by default?  
-35. Which two files are used by TCP Wrappers for host-based access control?  
-
-### **File Management**
-36. Create a new empty file `notes.txt`.  
-37. Create a directory `projects/`.  
-38. Copy `file1` to `backup/file1_copy`.  
-39. Move `file2` to `archive/file2`.  
-40. Delete a non-empty directory `testdir/`.  
-
-### **Links**
-41. Create a soft link `link1` pointing to `/etc/passwd`.  
-42. Create a hard link `link2` pointing to `/etc/passwd`.  
-43. What happens if the original file of a **soft link** is deleted?  
-44. What happens if the original file of a **hard link** is deleted?  
-
-### **Permissions & Ownership**
-45. Convert symbolic `rwxr-x---` to octal.  
-46. Give read, write, and execute permission to everyone on `file1`.  
-47. What’s the default umask for normal users?  
-48. If umask = 027, what will be the default permission of a new file?  
-49. Change the owner of `file1` to user `nasim`.  
-50. Change both owner and group of `dir1` recursively to `user1:group1`.  
-
-### **Documentation**
-51. Which command shows a short description of `ls` from the man database?  
-52. Search for the keyword “time” in the man pages.  
-53. What’s the difference between `man` and `info`?  
-54. Which command updates the man database?  
-55. Where is documentation for installed packages stored?  
+This guide contains **practice questions** with checkboxes for tracking and collapsible answers.  
+Try solving before expanding the answer!
 
 ---
 
-## 🔹 Part 2: Answers
+## 🔹 Basics (Simple)
 
-### **Basics**
-1. `pwd`  
-2. `ls -a`  
-3. Switches to the previous directory.  
-4. `whoami`  
-5. `who` shows logged-in users, `whoami` shows the current user only.  
-6. `clear`  
-7. `uptime`  
-8. `groups`  
-9. `last` shows successful logins and reboots, `lastb` shows failed attempts.  
-10. System + kernel information.  
+- [ ] **1. Which command shows the current working directory?**  
+  <details><summary>Answer</summary>  
+  `pwd`  
+  </details>
 
-### **Intermediate**
-11. `hostnamectl` → `hostnamectl set-hostname server1`  
-12. `timedatectl list-timezones`  
-13. `timedatectl set-timezone Asia/Dhaka`  
-14. `which ls`  
-15. `lsusb`  
-16. `lscpu`  
-17. Both compress, but gzip uses `.gz`, bzip2 uses `.bz2` (usually smaller but slower).  
-18. `tar cvf backup.tar /home/user/`  
-19. `tar xvfz backup.tar.gz`  
-20. `-c` creates a new archive, `-r` appends files to an existing one.  
+- [ ] **2. How do you list all hidden files in a directory?**  
+  <details><summary>Answer</summary>  
+  `ls -a`  
+  </details>
 
-### **I/O Redirection**
-21. `ls -l > files.txt`  
-22. `pwd >> files.txt`  
-23. `ls /no/such/dir 2> error.txt`  
-24. `echo hello >> all.txt 2>&1`  
-25. `cat < /etc/passwd`  
+- [ ] **3. What does `cd -` do?**  
+  <details><summary>Answer</summary>  
+  Switches to the previous directory.  
+  </details>
 
-### **Text Searching & Regex**
-26. `grep root /etc/passwd`  
-27. `grep ^user100 /etc/passwd`  
-28. `grep /bin/bash$ /etc/passwd`  
-29. `grep -i nasim /etc/hosts`  
-30. Shows all lines **not containing** “nasim”.  
+- [ ] **4. Which command shows the username of the current shell session?**  
+  <details><summary>Answer</summary>  
+  `whoami`  
+  </details>
 
-### **SSH & Remote Access**
-31. `ssh admin@192.168.1.10`  
-32. `ssh-keygen`  
-33. `ssh-copy-id user@host`  
-34. `~/.ssh/id_rsa` (private), `~/.ssh/id_rsa.pub` (public)  
-35. `/etc/hosts.allow` and `/etc/hosts.deny`  
+- [ ] **5. What is the difference between `who` and `whoami`?**  
+  <details><summary>Answer</summary>  
+  `who` shows logged-in users, `whoami` shows only the current user.  
+  </details>
 
-### **File Management**
-36. `touch notes.txt`  
-37. `mkdir projects/`  
-38. `cp file1 backup/file1_copy`  
-39. `mv file2 archive/file2`  
-40. `rm -r testdir/`  
+- [ ] **6. How do you clear the terminal screen?**  
+  <details><summary>Answer</summary>  
+  `clear`  
+  </details>
 
-### **Links**
-41. `ln -s /etc/passwd link1`  
-42. `ln /etc/passwd link2`  
-43. Soft link becomes broken (dangling).  
-44. Hard link still works, data is preserved until all hard links are removed.  
+- [ ] **7. Which command shows the system uptime?**  
+  <details><summary>Answer</summary>  
+  `uptime`  
+  </details>
 
-### **Permissions & Ownership**
-45. `750`  
-46. `chmod 777 file1`  
-47. `0002`  
-48. New file permissions = 666 – 027 = `640` (rw-r-----)  
-49. `chown nasim file1`  
-50. `chown -R user1:group1 dir1`  
+- [ ] **8. How do you show all groups the current user belongs to?**  
+  <details><summary>Answer</summary>  
+  `groups`  
+  </details>
 
-### **Documentation**
-51. `whatis ls`  
-52. `man -k time` or `apropos time`  
-53. `man` gives concise usage docs, `info` gives more detailed structured docs.  
-54. `mandb`  
-55. `/usr/share/doc/`  
+- [ ] **9. What’s the difference between `last` and `lastb`?**  
+  <details><summary>Answer</summary>  
+  `last` shows successful logins/reboots, `lastb` shows failed attempts.  
+  </details>
+
+- [ ] **10. What does `uname -a` display?**  
+  <details><summary>Answer</summary>  
+  System + kernel information.  
+  </details>
+
+---
+
+## 🔹 Intermediate
+
+- [ ] **11. View the hostname and then change it to `server1`.**  
+  <details><summary>Answer</summary>  
+  `hostnamectl` → `hostnamectl set-hostname server1`  
+  </details>
+
+- [ ] **12. Which command lists all available time zones?**  
+  <details><summary>Answer</summary>  
+  `timedatectl list-timezones`  
+  </details>
+
+- [ ] **13. Set the system timezone to `Asia/Dhaka`.**  
+  <details><summary>Answer</summary>  
+  `timedatectl set-timezone Asia/Dhaka`  
+  </details>
+
+- [ ] **14. How do you check the path of a command (e.g., `ls`)?**  
+  <details><summary>Answer</summary>  
+  `which ls`  
+  </details>
+
+- [ ] **15. Which command shows details about USB devices?**  
+  <details><summary>Answer</summary>  
+  `lsusb`  
+  </details>
+
+- [ ] **16. Which command lists CPU details?**  
+  <details><summary>Answer</summary>  
+  `lscpu`  
+  </details>
+
+- [ ] **17. Difference between `gzip file.txt` and `bzip2 file.txt`?**  
+  <details><summary>Answer</summary>  
+  Both compress, gzip → `.gz`, bzip2 → `.bz2` (slower but smaller).  
+  </details>
+
+- [ ] **18. Create an archive `backup.tar` of `/home/user/`.**  
+  <details><summary>Answer</summary>  
+  `tar cvf backup.tar /home/user/`  
+  </details>
+
+- [ ] **19. Extract the archive `backup.tar.gz`.**  
+  <details><summary>Answer</summary>  
+  `tar xvfz backup.tar.gz`  
+  </details>
+
+- [ ] **20. Difference between `tar -cvf` and `tar -rvf`?**  
+  <details><summary>Answer</summary>  
+  `-c` creates new archive, `-r` appends to existing archive.  
+  </details>
+
+---
+
+## 🔹 I/O Redirection
+
+- [ ] **21. Redirect the output of `ls -l` to `files.txt`.**  
+  <details><summary>Answer</summary>  
+  `ls -l > files.txt`  
+  </details>
+
+- [ ] **22. Append `pwd` output to `files.txt`.**  
+  <details><summary>Answer</summary>  
+  `pwd >> files.txt`  
+  </details>
+
+- [ ] **23. Redirect only errors of `ls /no/such/dir` into `error.txt`.**  
+  <details><summary>Answer</summary>  
+  `ls /no/such/dir 2> error.txt`  
+  </details>
+
+- [ ] **24. Redirect both stdout & stderr of `echo hello` into `all.txt`.**  
+  <details><summary>Answer</summary>  
+  `echo hello >> all.txt 2>&1`  
+  </details>
+
+- [ ] **25. Read `/etc/passwd` using input redirection.**  
+  <details><summary>Answer</summary>  
+  `cat < /etc/passwd`  
+  </details>
+
+---
+
+## 🔹 Text Searching & Regex
+
+- [ ] **26. Find lines containing `root` in `/etc/passwd`.**  
+  <details><summary>Answer</summary>  
+  `grep root /etc/passwd`  
+  </details>
+
+- [ ] **27. Find lines starting with `user100` in `/etc/passwd`.**  
+  <details><summary>Answer</summary>  
+  `grep ^user100 /etc/passwd`  
+  </details>
+
+- [ ] **28. Find lines ending with `/bin/bash` in `/etc/passwd`.**  
+  <details><summary>Answer</summary>  
+  `grep /bin/bash$ /etc/passwd`  
+  </details>
+
+- [ ] **29. Case-insensitive search for “nasim” in `/etc/hosts`.**  
+  <details><summary>Answer</summary>  
+  `grep -i nasim /etc/hosts`  
+  </details>
+
+- [ ] **30. What does `grep -v nasim /etc/passwd` do?**  
+  <details><summary>Answer</summary>  
+  Shows all lines **not containing** “nasim”.  
+  </details>
+
+---
+
+## 🔹 SSH & Remote Access
+
+- [ ] **31. SSH as user `admin` to host `192.168.1.10`.**  
+  <details><summary>Answer</summary>  
+  `ssh admin@192.168.1.10`  
+  </details>
+
+- [ ] **32. How do you generate SSH keys?**  
+  <details><summary>Answer</summary>  
+  `ssh-keygen`  
+  </details>
+
+- [ ] **33. Copy your SSH key to a remote host.**  
+  <details><summary>Answer</summary>  
+  `ssh-copy-id user@host`  
+  </details>
+
+- [ ] **34. Where are SSH keys stored by default?**  
+  <details><summary>Answer</summary>  
+  `~/.ssh/id_rsa` (private), `~/.ssh/id_rsa.pub` (public)  
+  </details>
+
+- [ ] **35. Which two files control TCP Wrappers?**  
+  <details><summary>Answer</summary>  
+  `/etc/hosts.allow` and `/etc/hosts.deny`  
+  </details>
+
+---
+
+## 🔹 File Management
+
+- [ ] **36. Create an empty file `notes.txt`.**  
+  <details><summary>Answer</summary>  
+  `touch notes.txt`  
+  </details>
+
+- [ ] **37. Create directory `projects/`.**  
+  <details><summary>Answer</summary>  
+  `mkdir projects/`  
+  </details>
+
+- [ ] **38. Copy `file1` to `backup/file1_copy`.**  
+  <details><summary>Answer</summary>  
+  `cp file1 backup/file1_copy`  
+  </details>
+
+- [ ] **39. Move `file2` to `archive/file2`.**  
+  <details><summary>Answer</summary>  
+  `mv file2 archive/file2`  
+  </details>
+
+- [ ] **40. Delete non-empty directory `testdir/`.**  
+  <details><summary>Answer</summary>  
+  `rm -r testdir/`  
+  </details>
+
+---
+
+## 🔹 Links
+
+- [ ] **41. Create a soft link `link1` → `/etc/passwd`.**  
+  <details><summary>Answer</summary>  
+  `ln -s /etc/passwd link1`  
+  </details>
+
+- [ ] **42. Create a hard link `link2` → `/etc/passwd`.**  
+  <details><summary>Answer</summary>  
+  `ln /etc/passwd link2`  
+  </details>
+
+- [ ] **43. What happens if soft link’s target is deleted?**  
+  <details><summary>Answer</summary>  
+  The soft link becomes broken (dangling).  
+  </details>
+
+- [ ] **44. What happens if hard link’s target is deleted?**  
+  <details><summary>Answer</summary>  
+  Data remains accessible via the hard link.  
+  </details>
+
+---
+
+## 🔹 Permissions & Ownership
+
+- [ ] **45. Convert `rwxr-x---` to octal.**  
+  <details><summary>Answer</summary>  
+  `750`  
+  </details>
+
+- [ ] **46. Give full permissions to everyone on `file1`.**  
+  <details><summary>Answer</summary>  
+  `chmod 777 file1`  
+  </details>
+
+- [ ] **47. Default umask for normal users?**  
+  <details><summary>Answer</summary>  
+  `0002`  
+  </details>
+
+- [ ] **48. New file perms if umask=027?**  
+  <details><summary>Answer</summary>  
+  666 – 027 = `640` (rw-r-----)  
+  </details>
+
+- [ ] **49. Change owner of `file1` to user `nasim`.**  
+  <details><summary>Answer</summary>  
+  `chown nasim file1`  
+  </details>
+
+- [ ] **50. Recursively change owner & group of `dir1` to `user1:group1`.**  
+  <details><summary>Answer</summary>  
+  `chown -R user1:group1 dir1`  
+  </details>
+
+---
+
+## 🔹 Documentation
+
+- [ ] **51. Short description of `ls` from man db?**  
+  <details><summary>Answer</summary>  
+  `whatis ls`  
+  </details>
+
+- [ ] **52. Search for “time” in man pages.**  
+  <details><summary>Answer</summary>  
+  `man -k time` or `apropos time`  
+  </details>
+
+- [ ] **53. Difference between `man` and `info`?**  
+  <details><summary>Answer</summary>  
+  `man` → concise usage, `info` → detailed structured docs.  
+  </details>
+
+- [ ] **54. Update the man database.**  
+  <details><summary>Answer</summary>  
+  `mandb`  
+  </details>
+
+- [ ] **55. Where is package documentation stored?**  
+  <details><summary>Answer</summary>  
+  `/usr/share/doc/`  
+  </details>
