@@ -21,7 +21,7 @@
 ## Section 1: Boot & Recovery
 
 * [ ] Break GRUB by renaming `/boot/grub2/grub.cfg` → reboot → fix it.
-* [ ] Reset the root password **without knowing the old one** (using GRUB rescue).
+* [X] Reset the root password **without knowing the old one** (using GRUB rescue).
 
 ---
 
