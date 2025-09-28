@@ -313,3 +313,164 @@ Try solving before expanding the answer!
   <details><summary>Answer</summary>  
   `/usr/share/doc/`  
   </details>
+
+---
+# Scenario-Based Linux Practice Questions
+
+## 1. File Management and Permissions
+
+* [ ] Your team asks you to create a project directory at `/home/projects/demo`. Inside it:
+
+  * Create three files: `report.txt`, `data.csv`, and `script.sh`.
+  * Set permissions so that:
+
+    * The owner has full permissions.
+    * The group has read + execute.
+    * Others have no access.
+  * Change ownership of the directory and files to a user `devuser` and group `devteam`.
+  * Create a **hard link** to `report.txt` named `report_backup`.
+  * Create a **soft link** to `script.sh` named `run.sh`.
+
+<details>
+<summary>✅ Answer</summary>
+
+```bash
+mkdir -p /home/projects/demo
+cd /home/projects/demo
+touch report.txt data.csv script.sh
+chmod 750 report.txt data.csv script.sh
+chown devuser:devteam report.txt data.csv script.sh
+ln report.txt report_backup
+ln -s script.sh run.sh
+```
+
+</details>
+
+## 2. Archiving and Compression
+
+* [ ] Your manager wants a backup of the `/etc` directory:
+
+  * Create a tar archive `etc_backup.tar`.
+  * Compress it with `gzip`.
+  * Extract it in `/tmp/restore_etc`.
+  * Verify the extracted files maintain the original directory structure.
+
+<details>
+<summary>✅ Answer</summary>
+
+```bash
+tar cvf etc_backup.tar /etc
+gzip etc_backup.tar
+mkdir -p /tmp/restore_etc
+tar xvf etc_backup.tar.gz -C /tmp/restore_etc
+```
+
+</details>
+
+## 3. User Management and Logs
+
+* [ ] You’ve created a new user `audituser`. Perform the following:
+
+  * Switch to the new user and verify the login shell.
+  * Check which groups `audituser` belongs to.
+  * Find the last login of `audituser`.
+  * Display all failed login attempts on the system.
+
+<details>
+<summary>✅ Answer</summary>
+
+```bash
+su - audituser
+echo $SHELL
+groups audituser
+last audituser
+lastb
+```
+
+</details>
+
+## 4. SSH and Remote Access
+
+* [ ] Your team needs passwordless access to a remote system (`192.168.1.50`) for user `devuser`:
+
+  * Generate an SSH key for `devuser`.
+  * Copy the public key to the remote system.
+  * Log in without entering a password.
+  * Verify which terminal you are using.
+
+<details>
+<summary>✅ Answer</summary>
+
+```bash
+ssh-keygen -t rsa
+ssh-copy-id devuser@192.168.1.50
+ssh devuser@192.168.1.50
+tty
+```
+
+</details>
+
+## 5. Text Analysis and Redirection
+
+* [ ] Your boss gives you `/etc/passwd` and wants the following:
+
+  * Find all lines containing the word `nologin`.
+  * Count how many such lines exist.
+  * Save the results to `nologin_users.txt`.
+  * Append system uptime info into the same file.
+
+<details>
+<summary>✅ Answer</summary>
+
+```bash
+grep nologin /etc/passwd > nologin_users.txt
+grep -c nologin /etc/passwd >> nologin_users.txt
+uptime >> nologin_users.txt
+```
+
+</details>
+
+## 6. Time and Host Configuration
+
+* [ ] You are asked to:
+
+  * Change the system’s hostname to `prod-server`.
+  * Set the timezone to `Asia/Dhaka`.
+  * Verify the changes.
+
+<details>
+<summary>✅ Answer</summary>
+
+```bash
+hostnamectl set-hostname prod-server
+timedatectl set-timezone Asia/Dhaka
+hostnamectl
+timedatectl
+```
+
+</details>
+
+## 7. Vim Editing Challenge
+
+* [ ] Open a file named `notes.txt` in `vim` and perform the following:
+
+  * Insert the text `System Maintenance Log`.
+  * Copy this line.
+  * Paste it three times.
+  * Delete the last line.
+  * Save and quit.
+
+<details>
+<summary>✅ Answer</summary>
+
+```vim
+iSystem Maintenance Log <Esc>
+yy
+3p
+dd
+:wq
+```
+
+</details>
+
+
