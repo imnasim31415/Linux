@@ -126,6 +126,8 @@ scp /etc/hosts user@192.168.1.100:/tmp/
 
 ```bash
 grep "/bin/bash" /etc/passwd | cut -d: -f1
+# or
+cat /etc/passwd | grep /bin/bash | awk '{split($1,a,":"); print a[1]}'
 ```
 
 </details>
@@ -136,6 +138,8 @@ grep "/bin/bash" /etc/passwd | cut -d: -f1
 
 ```bash
 grep -c "/sbin/nologin" /etc/passwd
+ # or
+cat /etc/passwd | grep /sbin/nologin | wc -l
 ```
 
 </details>
@@ -232,7 +236,7 @@ info ls
 ```bash
 mkdir -p /scripts
 touch /scripts/deploy.sh
-chmod 6710 /scripts/deploy.sh
+chmod 4770 /scripts/deploy.sh
 ```
 
 </details>
