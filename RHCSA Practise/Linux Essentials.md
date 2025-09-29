@@ -1,476 +1,579 @@
-# Linux Essentials – Practice Q&A
+# RHCSA – Tough Practice Q&A
 
-This guide contains **practice questions** with checkboxes for tracking and collapsible answers.  
-Try solving before expanding the answer!
 
----
+* [ ] **1. Create a directory `/secure/projects` with the following:**
 
-## 🔹 Basics (Simple)
+  * Owner: `devuser`, Group: `devteam`
+  * Permissions: Owner full, Group read+execute, Others no access.
+  * Inside it, create `confidential.txt` and set **SUID** on it.
 
-- [x] **1. Which command shows the current working directory?**
-<details><summary>Answer</summary>  
-`pwd`  
-</details>
-
-- [x] **2. How do you list all hidden files in a directory?**
-<details><summary>Answer</summary>  
-`ls -a`  
-</details>
-
-- [x] **3. What does `cd -` do?**
-<details><summary>Answer</summary>  
-Switches to the previous directory.  
-</details>
-
-- [x] **4. Which command shows the username of the current shell session?**
-<details><summary>Answer</summary>  
-`whoami`  
-</details>
-
-- [ ] **5. What is the difference between `who` and `whoami`?**
-<details><summary>Answer</summary>  
-`who` shows logged-in users, `whoami` shows only the current user.  
-</details>
-
-- [x] **6. How do you clear the terminal screen?**
-<details><summary>Answer</summary>  
-`clear`  
-</details>
-
-- [x] **7. Which command shows the system uptime?**
-<details><summary>Answer</summary>  
-`uptime`  
-</details>
-
-- [x] **8. How do you show all groups the current user belongs to?**
-<details><summary>Answer</summary>  
-`groups`  
-</details>
-
-- [ ] **9. What’s the difference between `last` and `lastb`?**
-<details><summary>Answer</summary>  
-`last` shows successful logins/reboots, `lastb` shows failed attempts.  
-</details>
-
-- [ ] **10. What does `uname -a` display?**
-<details><summary>Answer</summary>  
-System + kernel information.  
-</details>
-
----
-
-## 🔹 Intermediate
-
-- [ ] **11. View the hostname and then change it to `server1`.**
-<details><summary>Answer</summary>  
-`hostnamectl` → `hostnamectl set-hostname server1`  
-</details>
-
-- [x] **12. Which command lists all available time zones?**
-<details><summary>Answer</summary>  
-`timedatectl list-timezones`  
-</details>
-
-- [x] **13. Set the system timezone to `Asia/Dhaka`.**
-<details><summary>Answer</summary>  
-`timedatectl set-timezone Asia/Dhaka`  
-</details>
-
-- [x] **14. How do you check the path of a command (e.g., `ls`)?**
-<details><summary>Answer</summary>  
-`which ls`  
-</details>
-
-- [x] **15. Which command shows details about USB devices?**
-<details><summary>Answer</summary>  
-`lsusb`  
-</details>
-
-- [x] **16. Which command lists CPU details?**
-<details><summary>Answer</summary>  
-`lscpu`  
-</details>
-
-- [x] **17. Difference between `gzip file.txt` and `bzip2 file.txt`?**
-<details><summary>Answer</summary>  
-Both compress, gzip → `.gz`, bzip2 → `.bz2` (slower but smaller).  
-</details>
-
-- [x] **18. Create an archive `backup.tar` of `/home/user/`.**
-<details><summary>Answer</summary>  
-`tar cvf backup.tar /home/user/`  
-</details>
-
-- [x] **19. Extract the archive `backup.tar.gz`.**
-<details><summary>Answer</summary>  
-`tar xvfz backup.tar.gz`  
-</details>
-
-- [ ] **20. Difference between `tar -cvf` and `tar -rvf`?**
-<details><summary>Answer</summary>  
-`-c` creates new archive, `-r` appends to existing archive.  
-</details>
-
----
-
-## 🔹 I/O Redirection
-
-- [x] **21. Redirect the output of `ls -l` to `files.txt`.**
-<details><summary>Answer</summary>  
-`ls -l > files.txt`  
-</details>
-
-- [x] **22. Append `pwd` output to `files.txt`.**
-<details><summary>Answer</summary>  
-`pwd >> files.txt`  
-</details>
-
-- [x] **23. Redirect only errors of `ls /no/such/dir` into `error.txt`.**
-<details><summary>Answer</summary>  
-`ls /no/such/dir 2> error.txt`  
-</details>
-
-- [x] **24. Redirect both stdout & stderr of `echo hello` into `all.txt`.**
-<details><summary>Answer</summary>  
-`echo hello >> all.txt 2>&1`  
-</details>
-
-- [x] **25. Read `/etc/passwd` using input redirection.**
-<details><summary>Answer</summary>  
-`cat < /etc/passwd`  
-</details>
-
----
-
-## 🔹 Text Searching & Regex
-
-- [x] **26. Find lines containing `root` in `/etc/passwd`.**
-<details><summary>Answer</summary>  
-`grep root /etc/passwd`  
-</details>
-
-- [ ] **27. Find lines starting with `user100` in `/etc/passwd`.**
-<details><summary>Answer</summary>  
-`grep ^user100 /etc/passwd`  
-</details>
-
-- [ ] **28. Find lines ending with `/bin/bash` in `/etc/passwd`.**
-<details><summary>Answer</summary>  
-`grep /bin/bash$ /etc/passwd`  
-</details>
-
-- [ ] **29. Case-insensitive search for “nasim” in `/etc/hosts`.**
-<details><summary>Answer</summary>  
-`grep -i nasim /etc/hosts`  
-</details>
-
-- [ ] **30. What does `grep -v nasim /etc/passwd` do?**
-<details><summary>Answer</summary>  
-Shows all lines **not containing** “nasim”.  
-</details>
-
----
-
-## 🔹 SSH & Remote Access
-
-- [ ] **31. SSH as user `admin` to host `192.168.1.10`.**
-<details><summary>Answer</summary>  
-`ssh admin@192.168.1.10`  
-</details>
-
-- [ ] **32. How do you generate SSH keys?**
-<details><summary>Answer</summary>  
-`ssh-keygen`  
-</details>
-
-- [ ] **33. Copy your SSH key to a remote host.**
-<details><summary>Answer</summary>  
-`ssh-copy-id user@host`  
-</details>
-
-- [ ] **34. Where are SSH keys stored by default?**
-<details><summary>Answer</summary>  
-`~/.ssh/id_rsa` (private), `~/.ssh/id_rsa.pub` (public)  
-</details>
-
-- [ ] **35. Which two files control TCP Wrappers?**
-<details><summary>Answer</summary>  
-`/etc/hosts.allow` and `/etc/hosts.deny`  
-</details>
-
----
-
-## 🔹 File Management
-
-- [ ] **36. Create an empty file `notes.txt`.**
-<details><summary>Answer</summary>  
-`touch notes.txt`  
-</details>
-
-- [ ] **37. Create directory `projects/`.**
-<details><summary>Answer</summary>  
-`mkdir projects/`  
-</details>
-
-- [ ] **38. Copy `file1` to `backup/file1_copy`.**
-<details><summary>Answer</summary>  
-`cp file1 backup/file1_copy`  
-</details>
-
-- [ ] **39. Move `file2` to `archive/file2`.**
-<details><summary>Answer</summary>  
-`mv file2 archive/file2`  
-</details>
-
-- [ ] **40. Delete non-empty directory `testdir/`.**
-<details><summary>Answer</summary>  
-`rm -r testdir/`  
-</details>
-
----
-
-## 🔹 Links
-
-- [ ] **41. Create a soft link `link1` → `/etc/passwd`.**
-<details><summary>Answer</summary>  
-`ln -s /etc/passwd link1`  
-</details>
-
-- [ ] **42. Create a hard link `link2` → `/etc/passwd`.**
-<details><summary>Answer</summary>  
-`ln /etc/passwd link2`  
-</details>
-
-- [ ] **43. What happens if soft link’s target is deleted?**
-<details><summary>Answer</summary>  
-The soft link becomes broken (dangling).  
-</details>
-
-- [ ] **44. What happens if hard link’s target is deleted?**
-<details><summary>Answer</summary>  
-Data remains accessible via the hard link.  
-</details>
-
----
-
-## 🔹 Permissions & Ownership
-
-- [x] **45. Convert `rwxr-x---` to octal.**
-<details><summary>Answer</summary>  
-`750`  
-</details>
-
-- [x] **46. Give full permissions to everyone on `file1`.**
-<details><summary>Answer</summary>  
-`chmod 777 file1`  
-</details>
-
-- [ ] **47. Default umask for normal users?**
-<details><summary>Answer</summary>  
-`0002`  
-</details>
-
-- [ ] **48. New file perms if umask=027?**
-<details><summary>Answer</summary>  
-666 – 027 = `640` (rw-r-----)  
-</details>
-
-- [x] **49. Change owner of `file1` to user `nasim`.**
-<details><summary>Answer</summary>  
-`chown nasim file1`  
-</details>
-
-- [ ] **50. Recursively change owner & group of `dir1` to `user1:group1`.**
-<details><summary>Answer</summary>  
-`chown -R user1:group1 dir1`  
-</details>
-
----
-
-## 🔹 Documentation
-
-- [ ] **51. Short description of `ls` from man db?**
-<details><summary>Answer</summary>  
-`whatis ls`  
-</details>
-
-- [ ] **52. Search for “time” in man pages.**
-<details><summary>Answer</summary>  
-`man -k time` or `apropos time`  
-</details>
-
-- [x] **53. Difference between `man` and `info`?**
-<details><summary>Answer</summary>  
-`man` → concise usage, `info` → detailed structured docs.  
-</details>
-
-- [x] **54. Update the man database.**
-<details><summary>Answer</summary>  
-`mandb`  
-</details>
-
-- [ ] **55. Where is package documentation stored?**
-<details><summary>Answer</summary>  
-`/usr/share/doc/`  
-</details>
-
----
-
-# Scenario-Based Linux Practice Questions
-
-## 1. File Management and Permissions
-
-- [ ] Your team asks you to create a project directory at `/home/projects/demo`. Inside it:
-
-  - Create three files: `report.txt`, `data.csv`, and `script.sh`.
-  - Set permissions so that:
-
-    - The owner has full permissions.
-    - The group has read + execute.
-    - Others have no access.
-
-  - Change ownership of the directory and files to a user `devuser` and group `devteam`.
-  - Create a **hard link** to `report.txt` named `report_backup`.
-  - Create a **soft link** to `script.sh` named `run.sh`.
-
-<details>
-<summary>✅ Answer</summary>
+<details><summary>✅ Answer</summary>
 
 ```bash
-mkdir -p /home/projects/demo
-cd /home/projects/demo
-touch report.txt data.csv script.sh
-chmod 750 report.txt data.csv script.sh
-chown devuser:devteam report.txt data.csv script.sh
-ln report.txt report_backup
-ln -s script.sh run.sh
+mkdir -p /secure/projects
+chown devuser:devteam /secure/projects
+chmod 750 /secure/projects
+cd /secure/projects
+touch confidential.txt
+chmod 4740 confidential.txt
 ```
 
 </details>
 
-## 2. Archiving and Compression
+* [ ] **2. Create a shared directory `/data/shared` where:**
 
-- [ ] Your manager wants a backup of the `/etc` directory:
+  * All files created inside should inherit the group of the directory.
+  * Prevent users from deleting files they don’t own.
 
-  - Create a tar archive `etc_backup.tar`.
-  - Compress it with `gzip`.
-  - Extract it in `/tmp/restore_etc`.
-  - Verify the extracted files maintain the original directory structure.
-
-<details>
-<summary>✅ Answer</summary>
+<details><summary>✅ Answer</summary>
 
 ```bash
-tar cvf etc_backup.tar /etc
-gzip etc_backup.tar
-mkdir -p /tmp/restore_etc
-tar xvf etc_backup.tar.gz -C /tmp/restore_etc
+mkdir -p /data/shared
+chown :devteam /data/shared
+chmod 2775 /data/shared   # SGID
+chmod +t /data/shared     # Sticky bit
 ```
 
 </details>
 
-## 3. User Management and Logs
+* [ ] **3. Find all files owned by user `john` under `/var` and save the list in `/root/john_files.txt`.**
 
-- [ ] You’ve created a new user `audituser`. Perform the following:
-
-  - Switch to the new user and verify the login shell.
-  - Check which groups `audituser` belongs to.
-  - Find the last login of `audituser`.
-  - Display all failed login attempts on the system.
-
-<details>
-<summary>✅ Answer</summary>
+<details><summary>✅ Answer</summary>
 
 ```bash
-su - audituser
-echo $SHELL
-groups audituser
-last audituser
-lastb
+find /var -user john > /root/john_files.txt
 ```
 
 </details>
 
-## 4. SSH and Remote Access
+* [ ] **4. Compare two files `config.old` and `config.new` line by line.**
 
-- [ ] Your team needs passwordless access to a remote system (`192.168.1.50`) for user `devuser`:
+<details><summary>✅ Answer</summary>
 
-  - Generate an SSH key for `devuser`.
-  - Copy the public key to the remote system.
-  - Log in without entering a password.
-  - Verify which terminal you are using.
+```bash
+diff config.old config.new
+```
 
-<details>
-<summary>✅ Answer</summary>
+</details>
+
+* [ ] **5. Display lines 10 to 20 from `/etc/passwd`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+sed -n '10,20p' /etc/passwd
+```
+
+</details>
+
+* [ ] **6. Create 2 users `u1` and `u2`. Set up `/collab` so:**
+
+  * Both users can read/write inside.
+  * New files are owned by group `collab`.
+  * Only owners can delete their files.
+
+<details><summary>✅ Answer</summary>
+
+```bash
+groupadd collab
+useradd -G collab u1
+useradd -G collab u2
+mkdir /collab
+chown root:collab /collab
+chmod 2770 /collab
+chmod +t /collab
+```
+
+</details>
+
+
+
+* [ ] **7. Create a compressed archive of `/etc` using `bzip2` and verify contents.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+tar cvjf etc_backup.tar.bz2 /etc
+tar tvf etc_backup.tar.bz2 | less
+```
+
+</details>
+
+* [ ] **8. Backup `/var/log` to remote host `192.168.1.100` under `/backups/logs`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+tar czf - /var/log | ssh user@192.168.1.100 "cat > /backups/logs/logs_backup.tar.gz"
+```
+
+</details>
+
+* [ ] **9. Securely copy `/etc/hosts` to remote host `192.168.1.100` at `/tmp/`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+scp /etc/hosts user@192.168.1.100:/tmp/
+```
+
+</details>
+
+
+* [ ] **10. Show all users from `/etc/passwd` that use `/bin/bash`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+grep "/bin/bash" /etc/passwd | cut -d: -f1
+```
+
+</details>
+
+* [ ] **11. Count how many system users have `/sbin/nologin`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+grep -c "/sbin/nologin" /etc/passwd
+```
+
+</details>
+
+* [ ] **12. Extract only usernames of users with UID < 1000 from `/etc/passwd`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+awk -F: '$3 < 1000 {print $1}' /etc/passwd
+```
+
+</details>
+
+* [ ] **13. Show all lines from `/etc/passwd` that do NOT contain `bash`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+grep -v bash /etc/passwd
+```
+
+</details>
+
+
+
+* [ ] **14. Configure passwordless SSH for user `admin` from local → `192.168.1.200`.**
+
+<details><summary>✅ Answer</summary>
 
 ```bash
 ssh-keygen -t rsa
-ssh-copy-id devuser@192.168.1.50
-ssh devuser@192.168.1.50
-tty
+ssh-copy-id admin@192.168.1.200
+ssh admin@192.168.1.200
 ```
 
 </details>
 
-## 5. Text Analysis and Redirection
+* [ ] **15. Restrict SSH login for `root` and allow only `wheel` group members.**
 
-- [x] Your boss gives you `/etc/passwd` and wants the following:
-
-  - Find all lines containing the word `nologin`.
-  - Count how many such lines exist.
-  - Save the results to `nologin_users.txt`.
-  - Append system uptime info into the same file.
-
-<details>
-<summary>✅ Answer</summary>
+<details><summary>✅ Answer</summary>
 
 ```bash
-grep nologin /etc/passwd > nologin_users.txt
-grep -c nologin /etc/passwd >> nologin_users.txt
-uptime >> nologin_users.txt
+vi /etc/ssh/sshd_config
+# PermitRootLogin no
+# AllowGroups wheel
+systemctl restart sshd
 ```
 
 </details>
 
-## 6. Time and Host Configuration
 
-- [x] You are asked to:
 
-  - Change the system’s hostname to `prod-server`.
-  - Set the timezone to `Asia/Dhaka`.
-  - Verify the changes.
+* [ ] **16. Find documentation of `tar` in `/usr/share/doc`.**
 
-<details>
-<summary>✅ Answer</summary>
+<details><summary>✅ Answer</summary>
 
 ```bash
-hostnamectl set-hostname prod-server
-timedatectl set-timezone Asia/Dhaka
-hostnamectl
-timedatectl
+ls /usr/share/doc/tar*
 ```
 
 </details>
 
-## 7. Vim Editing Challenge
+* [ ] **17. Search man pages for keyword `socket`.**
 
-- [x] Open a file named `notes.txt` in `vim` and perform the following:
+<details><summary>✅ Answer</summary>
 
-  - Insert the text `System Maintenance Log`.
-  - Copy this line.
-  - Paste it three times.
-  - Delete the last line.
-  - Save and quit.
+```bash
+man -k socket
+```
 
-<details>
-<summary>✅ Answer</summary>
+</details>
 
-```vim
-iSystem Maintenance Log <Esc>
-yy
-3p
-dd
-:wq
+* [ ] **18. Get detailed structured documentation about `ls`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+info ls
+```
+
+</details>
+
+
+
+* [ ] **19. Create `/scripts/deploy.sh` with these requirements:**
+
+  * Owner executes with elevated privileges (SUID).
+  * Group has full access.
+  * Others have no permissions.
+
+<details><summary>✅ Answer</summary>
+
+```bash
+mkdir -p /scripts
+touch /scripts/deploy.sh
+chmod 6710 /scripts/deploy.sh
+```
+
+</details>
+
+* [ ] **20. Create a directory `/tmp/public` where everyone can create files but only file owners can delete their own files.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+mkdir /tmp/public
+chmod 1777 /tmp/public
+```
+
+</details>
+
+    
+    
+# RHCSA – Advance tasks
+
+
+* [ ] **1. Create a directory `/secure/projects` with the following:**
+
+  * Owner: `devuser`, Group: `devteam`
+  * Permissions: Owner full, Group read+execute, Others no access.
+  * Inside it, create `confidential.txt` and set **SUID** on it.
+
+<details><summary>✅ Answer</summary>
+
+```bash
+mkdir -p /secure/projects
+chown devuser:devteam /secure/projects
+chmod 750 /secure/projects
+cd /secure/projects
+touch confidential.txt
+chmod 4740 confidential.txt
+```
+
+</details>
+
+* [ ] **2. Create a shared directory `/data/shared` where:**
+
+  * All files created inside should inherit the group of the directory.
+  * Prevent users from deleting files they don’t own.
+
+<details><summary>✅ Answer</summary>
+
+```bash
+mkdir -p /data/shared
+chown :devteam /data/shared
+chmod 2775 /data/shared   # SGID
+chmod +t /data/shared     # Sticky bit
+```
+
+</details>
+
+* [ ] **3. Find all files owned by user `john` under `/var` and save the list in `/root/john_files.txt`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+find /var -user john > /root/john_files.txt
+```
+
+</details>
+
+* [ ] **4. Compare two files `config.old` and `config.new` line by line.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+diff config.old config.new
+```
+
+</details>
+
+* [ ] **5. Display lines 10 to 20 from `/etc/passwd`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+sed -n '10,20p' /etc/passwd
+```
+
+</details>
+
+* [ ] **6. Create a compressed archive of `/etc` but exclude all `.conf` files. Save it as `/root/etc-backup.tar.gz`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+tar --exclude='*.conf' -czf /root/etc-backup.tar.gz /etc
+```
+
+</details>
+
+* [ ] **7. Search recursively under `/usr` for files larger than 50MB and save the output in `/root/large_files.txt`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+find /usr -type f -size +50M > /root/large_files.txt
+```
+
+</details>
+
+* [ ] **8. Find files under `/var/log` modified within the last 7 days and copy them to `/root/log_backup`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+mkdir -p /root/log_backup
+find /var/log -type f -mtime -7 -exec cp {} /root/log_backup/ \;
+```
+
+</details>
+
+* [ ] **9. Create a symbolic link `/root/syslog` pointing to `/var/log/messages`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+ln -s /var/log/messages /root/syslog
+```
+
+</details>
+
+* [ ] **10. Create a hard link `/root/passwd_link` pointing to `/etc/passwd`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+ln /etc/passwd /root/passwd_link
+```
+
+</details>
+
+* [ ] **11. Set default ACLs on `/projects` so that new files get read+write permissions for group `devteam`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+setfacl -m g:devteam:rw /projects
+setfacl -d -m g:devteam:rw /projects
+```
+
+</details>
+
+* [ ] **12. Remove all ACLs from `/projects/confidential.txt`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+setfacl -b /projects/confidential.txt
+```
+
+</details>
+
+* [ ] **13. Change the group ownership of all `.log` files under `/var/log` to `sysadmin`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+find /var/log -type f -name "*.log" -exec chgrp sysadmin {} +
+```
+
+</details>
+
+* [ ] **14. Recursively set all directories under `/secure` to 750 and all files to 640.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+find /secure -type d -exec chmod 750 {} +
+find /secure -type f -exec chmod 640 {} +
+```
+
+</details>
+
+* [ ] **15. Archive `/home` into `/root/home-backup.tar.gz`, but only include files owned by `student`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+tar --owner=student --group=student --create --gzip --file=/root/home-backup.tar.gz /home
+```
+
+</details>
+
+* [ ] **16. Replace all occurrences of `http` with `https` in `/etc/httpd/conf/httpd.conf` and save changes in-place.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+sed -i 's/http/https/g' /etc/httpd/conf/httpd.conf
+```
+
+</details>
+
+* [ ] **17. Display only the usernames from `/etc/passwd`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+cut -d: -f1 /etc/passwd
+```
+
+</details>
+
+* [ ] **18. Find the top 5 largest files in `/var`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+du -ah /var | sort -rh | head -5
+```
+
+</details>
+
+* [ ] **19. Verify if `/root/etc-backup.tar.gz` is a valid tar archive without extracting it.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+tar -tzf /root/etc-backup.tar.gz > /dev/null
+```
+
+</details>
+
+* [ ] **20. Extract only `sshd_config` file from `/root/etc-backup.tar.gz` into `/tmp/`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+tar -xzf /root/etc-backup.tar.gz -C /tmp etc/ssh/sshd_config
+```
+
+</details>
+
+* [ ] **21. Find files in `/etc` that are not regular files (like sockets, devices, symlinks) and save results to `/root/etc_special.txt`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+find /etc ! -type f > /root/etc_special.txt
+```
+
+</details>
+
+* [ ] **22. Create `/opt/scripts/cleanup.sh` that deletes files in `/tmp` older than 10 days.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+mkdir -p /opt/scripts
+cat <<'EOF' > /opt/scripts/cleanup.sh
+#!/bin/bash
+find /tmp -type f -mtime +10 -delete
+EOF
+chmod +x /opt/scripts/cleanup.sh
+```
+
+</details>
+
+* [ ] **23. Schedule the above script to run every day at midnight using cron.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+echo "0 0 * * * /opt/scripts/cleanup.sh" >> /var/spool/cron/root
+```
+
+</details>
+
+* [ ] **24. Copy `/etc/passwd` to `/root/passwd_copy.txt` but preserve permissions, timestamps, and SELinux context.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+cp -a /etc/passwd /root/passwd_copy.txt
+```
+
+</details>
+
+* [ ] **25. Create a tarball `/root/scripts-backup.tar.gz` that includes all `.sh` files under `/opt/scripts`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+tar -czf /root/scripts-backup.tar.gz /opt/scripts/*.sh
+```
+
+</details>
+
+* [ ] **26. Extract `/root/scripts-backup.tar.gz` into `/srv/scripts` but avoid overwriting existing files.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+mkdir -p /srv/scripts
+tar --keep-old-files -xzf /root/scripts-backup.tar.gz -C /srv/scripts
+```
+
+</details>
+
+* [ ] **27. List all files in `/etc` with their SELinux contexts.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+ls -Z /etc
+```
+
+</details>
+
+* [ ] **28. Restore the default SELinux context for `/var/www/html/index.html`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+restorecon -v /var/www/html/index.html
+```
+
+</details>
+
+* [ ] **29. Change the SELinux context of `/srv/data` so it can be served by Apache.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+semanage fcontext -a -t httpd_sys_content_t "/srv/data(/.*)?"
+restorecon -Rv /srv/data
+```
+
+</details>
+
+* [ ] **30. Search for all files with the `httpd_sys_content_t` context.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+find / -context *:httpd_sys_content_t:* 2>/dev/null
 ```
 
 </details>
