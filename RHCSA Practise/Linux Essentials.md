@@ -256,71 +256,58 @@ chmod 1777 /tmp/public
     
 # RHCSA – Advance tasks
 
-
-* [ ] **1. Create a directory `/secure/projects` with the following:**
-
-  * Owner: `devuser`, Group: `devteam`
-  * Permissions: Owner full, Group read+execute, Others no access.
-  * Inside it, create `confidential.txt` and set **SUID** on it.
+* [ ] **1. Extract `/root/scripts-backup.tar.gz` into `/srv/scripts` but avoid overwriting existing files.**
 
 <details><summary>✅ Answer</summary>
 
 ```bash
-mkdir -p /secure/projects
-chown devuser:devteam /secure/projects
-chmod 750 /secure/projects
-cd /secure/projects
-touch confidential.txt
-chmod 4740 confidential.txt
+mkdir -p /srv/scripts
+tar --keep-old-files -xzf /root/scripts-backup.tar.gz -C /srv/scripts
 ```
 
 </details>
 
-* [ ] **2. Create a shared directory `/data/shared` where:**
-
-  * All files created inside should inherit the group of the directory.
-  * Prevent users from deleting files they don’t own.
+* [ ] **2. List all files in `/etc` with their SELinux contexts.**
 
 <details><summary>✅ Answer</summary>
 
 ```bash
-mkdir -p /data/shared
-chown :devteam /data/shared
-chmod 2775 /data/shared   # SGID
-chmod +t /data/shared     # Sticky bit
+ls -Z /etc
 ```
 
 </details>
 
-* [ ] **3. Find all files owned by user `john` under `/var` and save the list in `/root/john_files.txt`.**
+* [ ] **3. Restore the default SELinux context for `/var/www/html/index.html`.**
 
 <details><summary>✅ Answer</summary>
 
 ```bash
-find /var -user john > /root/john_files.txt
+restorecon -v /var/www/html/index.html
 ```
 
 </details>
 
-* [ ] **4. Compare two files `config.old` and `config.new` line by line.**
+* [ ] **4. Change the SELinux context of `/srv/data` so it can be served by Apache.**
 
 <details><summary>✅ Answer</summary>
 
 ```bash
-diff config.old config.new
+semanage fcontext -a -t httpd_sys_content_t "/srv/data(/.*)?"
+restorecon -Rv /srv/data
 ```
 
 </details>
 
-* [ ] **5. Display lines 10 to 20 from `/etc/passwd`.**
+* [ ] **5. Search for all files with the `httpd_sys_content_t` context.**
 
 <details><summary>✅ Answer</summary>
 
 ```bash
-sed -n '10,20p' /etc/passwd
+find / -context *:httpd_sys_content_t:* 2>/dev/null
 ```
 
 </details>
+
 
 * [ ] **6. Create a compressed archive of `/etc` but exclude all `.conf` files. Save it as `/root/etc-backup.tar.gz`.**
 
@@ -530,54 +517,3 @@ tar -czf /root/scripts-backup.tar.gz /opt/scripts/*.sh
 
 </details>
 
-* [ ] **26. Extract `/root/scripts-backup.tar.gz` into `/srv/scripts` but avoid overwriting existing files.**
-
-<details><summary>✅ Answer</summary>
-
-```bash
-mkdir -p /srv/scripts
-tar --keep-old-files -xzf /root/scripts-backup.tar.gz -C /srv/scripts
-```
-
-</details>
-
-* [ ] **27. List all files in `/etc` with their SELinux contexts.**
-
-<details><summary>✅ Answer</summary>
-
-```bash
-ls -Z /etc
-```
-
-</details>
-
-* [ ] **28. Restore the default SELinux context for `/var/www/html/index.html`.**
-
-<details><summary>✅ Answer</summary>
-
-```bash
-restorecon -v /var/www/html/index.html
-```
-
-</details>
-
-* [ ] **29. Change the SELinux context of `/srv/data` so it can be served by Apache.**
-
-<details><summary>✅ Answer</summary>
-
-```bash
-semanage fcontext -a -t httpd_sys_content_t "/srv/data(/.*)?"
-restorecon -Rv /srv/data
-```
-
-</details>
-
-* [ ] **30. Search for all files with the `httpd_sys_content_t` context.**
-
-<details><summary>✅ Answer</summary>
-
-```bash
-find / -context *:httpd_sys_content_t:* 2>/dev/null
-```
-
-</details>
