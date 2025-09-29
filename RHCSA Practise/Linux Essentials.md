@@ -256,7 +256,18 @@ chmod 1777 /tmp/public
     
 # RHCSA – Advance tasks
 
-* [ ] **1. Extract `/root/scripts-backup.tar.gz` into `/srv/scripts` but avoid overwriting existing files.**
+
+* [ ] **1. Create a tarball `/root/scripts-backup.tar.gz` that includes all `.sh` files under `/opt/scripts`.**
+
+<details><summary>✅ Answer</summary>
+
+```bash
+tar -czf /root/scripts-backup.tar.gz /opt/scripts/*.sh
+```
+
+</details>
+
+* [ ] **2. Extract `/root/scripts-backup.tar.gz` into `/srv/scripts` but avoid overwriting existing files.**
 
 <details><summary>✅ Answer</summary>
 
@@ -267,15 +278,7 @@ tar --keep-old-files -xzf /root/scripts-backup.tar.gz -C /srv/scripts
 
 </details>
 
-* [ ] **2. List all files in `/etc` with their SELinux contexts.**
 
-<details><summary>✅ Answer</summary>
-
-```bash
-ls -Z /etc
-```
-
-</details>
 
 * [ ] **3. Restore the default SELinux context for `/var/www/html/index.html`.**
 
@@ -507,13 +510,12 @@ cp -a /etc/passwd /root/passwd_copy.txt
 
 </details>
 
-* [ ] **25. Create a tarball `/root/scripts-backup.tar.gz` that includes all `.sh` files under `/opt/scripts`.**
+* [ ] **25. List all files in `/etc` with their SELinux contexts.**
 
 <details><summary>✅ Answer</summary>
 
 ```bash
-tar -czf /root/scripts-backup.tar.gz /opt/scripts/*.sh
+ls -Z /etc
 ```
 
 </details>
-
