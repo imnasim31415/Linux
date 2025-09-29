@@ -257,23 +257,39 @@ chmod 1777 /tmp/public
 # RHCSA – Advance tasks
 
 
-* [ ] **1. Create a tarball `/root/scripts-backup.tar.gz` that includes all `.sh` files under `/opt/scripts`.**
+* [x] **1. Create a tarball `/tmp/scripts.bak.tar.gz` that includes all `.sh` files under `/tmp/scripts`.**
 
 <details><summary>✅ Answer</summary>
 
 ```bash
-tar -czf /root/scripts-backup.tar.gz /opt/scripts/*.sh
+cd /tmp
+
+# make sure we have some files
+mkdir -p scripts
+cd scripts
+touch file{1..5}.txt   # create dummy txt files
+touch script{1..4}.sh  # create dummy sh files
+
+# go back to /tmp and archive only .sh files
+cd /tmp
+tar cvaf scripts.bak.tar.gz scripts/*.sh   # c=create, v=verbose, a=auto-compress, f=file
+
+file scripts.bak.tar.gz  # verify compression format
 ```
 
 </details>
 
-* [ ] **2. Extract `/root/scripts-backup.tar.gz` into `/srv/scripts` but avoid overwriting existing files.**
+---
+
+* [x] **2. Extract `/tmp/scripts.bak.tar.gz` into `/tmp/scriptss` but avoid overwriting existing files.**
 
 <details><summary>✅ Answer</summary>
 
 ```bash
-mkdir -p /srv/scripts
-tar --keep-old-files -xzf /root/scripts-backup.tar.gz -C /srv/scripts
+mkdir -p /tmp/scriptss
+
+# Extract to /tmp/scriptss without overwriting existing files
+tar -xavf /tmp/scripts.bak.tar.gz --skip-old-files -C /tmp/scriptss
 ```
 
 </details>
