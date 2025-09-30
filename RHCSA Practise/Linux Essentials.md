@@ -295,39 +295,6 @@ tar -xavf /tmp/scripts.bak.tar.gz --skip-old-files -C /tmp/scriptss
 </details>
 
 
-
-* [ ] **3. Restore the default SELinux context for `/var/www/html/index.html`.**
-
-<details><summary>✅ Answer</summary>
-
-```bash
-restorecon -v /var/www/html/index.html
-```
-
-</details>
-
-* [ ] **4. Change the SELinux context of `/srv/data` so it can be served by Apache.**
-
-<details><summary>✅ Answer</summary>
-
-```bash
-semanage fcontext -a -t httpd_sys_content_t "/srv/data(/.*)?"
-restorecon -Rv /srv/data
-```
-
-</details>
-
-* [ ] **5. Search for all files with the `httpd_sys_content_t` context.**
-
-<details><summary>✅ Answer</summary>
-
-```bash
-find / -context *:httpd_sys_content_t:* 2>/dev/null
-```
-
-</details>
-
-
 * [ ] **6. Create a compressed archive of `/etc` but exclude all `.conf` files. Save it as `/root/etc-backup.tar.gz`.**
 
 <details><summary>✅ Answer</summary>
