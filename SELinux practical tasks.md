@@ -263,6 +263,43 @@ Update GRUB config after editing:
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 ```
 
+---
+# RHCSA: Important SELinux httpd Contexts
+
+## 1. Key SELinux Context Types
+
+| Context Type               | Purpose / Usage (RHCSA relevant)                    |
+|----------------------------|----------------------------------------------------|
+| `httpd_t`                  | Default Apache process context                     |
+| `httpd_sys_content_t`      | Read-only web content (e.g., `/var/www/html`)      |
+| `httpd_sys_rw_content_t`   | Writable content for uploads or dynamic apps       |
+| `httpd_sys_script_exec_t`  | CGI scripts or executables Apache can run          |
+| `httpd_log_t`              | Apache log files (`/var/log/httpd/`)              |
+| `httpd_config_t`           | Apache configuration files (`/etc/httpd/conf`)    |
+| `http_port_t`              | Ports allowed for Apache (default 80/443 + custom)|
+
+---
+
+## 2. Important SELinux Booleans
+
+| Boolean                     | Purpose / Usage (common RHCSA tasks)             |
+|------------------------------|------------------------------------------------|
+| `httpd_can_network_connect`  | Allow Apache to make outbound network connections |
+| `httpd_can_network_relay`    | Allow Apache to relay emails                   |
+| `httpd_enable_homedirs`      | Serve content from `/home` directories        |
+| `httpd_execmem`              | Allow Apache to execute memory-protected code |
+
+**Example Commands:**
+
+```bash
+# Check boolean status
+getsebool httpd_can_network_connect
+
+# Enable a boolean permanently
+sudo setsebool -P httpd_can_network_connect on
+```
+---
+
 ### Config File Method
 
 Persistent mode can also be set in `/etc/selinux/config`:
