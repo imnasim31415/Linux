@@ -31,38 +31,54 @@ SELinux (Security-Enhanced Linux) is a **mandatory access control (MAC) system**
 
 ---
 
-## 2. Practical Use Cases & Real-World Scenarios
+# 2. Practical Use Cases & Real-World Scenarios
 
-### 2.1 Real-World Scenarios
+## Scenario 0: Changing Apache HTTP Port
 
-## Scenario 0: Changing Apache HTTP port
+### Recommended Method (Step-by-Step)
+
 ```bash
 # Step 1: Change Apache port in the configuration
 sudo vi /etc/httpd/conf/httpd.conf
-# Find the line:
-# Listen 80
-# Change it to:
-# Listen 88
+# Change: Listen 80 -> Listen 88
 
 # Step 2: Update SELinux to allow Apache on the new port
 sudo semanage port -a -t http_port_t -p tcp 88
-# If port already defined, modify instead:
-# sudo semanage port -m -t http_port_t -p tcp 88
+# If port already defined:
+sudo semanage port -m -t http_port_t -p tcp 88
 
 # Step 3: Add the new port to the firewall permanently
 sudo firewall-cmd --permanent --add-port=88/tcp
-# Reload firewall to apply changes
 sudo firewall-cmd --reload
 
-# Step 4: Restart Apache to apply configuration changes
+# Step 4: Restart Apache
 sudo systemctl restart httpd
-# Optionally, check status to confirm
 sudo systemctl status httpd
 
 # Step 5: Verify Apache is listening on the new port
 sudo ss -tunlp | grep httpd
-
 ```
+
+---
+
+### Alternative Method (Not Recommended)
+
+```bash
+# Collect AVC denials related to httpd
+ausearch -C httpd --raw | audit2allow -M my_httpd
+
+# Load the custom SELinux module
+dmesg | grep httpd
+semodule -i my_httpd.pp
+```
+
+### Why not recommended?
+
+* `audit2allow` creates **custom SELinux policy modules**.
+* This bypasses the **standard mechanisms** (`semanage`, `setsebool`, `restorecon`).
+* It may grant **overly broad permissions** and is harder to maintain/debug.
+* For RHCSA, the correct way is to use **`semanage port`** for Apache port changes.
+---
 
 #### Scenario 1: Apache Serving Web Pages
 
@@ -76,7 +92,7 @@ restorecon -Rv /srv/mywebsite
 
 ✅ Apache restricted to safe web dirs.
 
-#### Scenario 2: SSH Home Directory Issue
+## Scenario 2: SSH Home Directory Issue
 
 * **Problem:** SSH fails after moving home dir.
 * **Fix:**
@@ -88,7 +104,7 @@ restorecon -Rv /data/home
 
 ✅ Users regain access securely.
 
-#### Scenario 3: Database & Web App Separation
+## Scenario 3: Database & Web App Separation
 
 * **Problem:** MySQL cannot access `/opt/mysql`.
 * **Fix:**
@@ -100,7 +116,7 @@ restorecon -Rv /opt/mysql
 
 ✅ httpd and mysqld remain isolated.
 
-#### Scenario 4: Kernel + SELinux Runtime
+## Scenario 4: Kernel + SELinux Runtime
 
 * **Problem:** Web app requires routing + network access.
 * **Kernel fix:**
@@ -118,19 +134,19 @@ setsebool -P httpd_can_network_connect on
 
 ✅ Both OS & SELinux allow secure networking.
 
-#### Scenario 5: Zero-Day in SSHD
+## Scenario 5: Zero-Day in SSHD
 
 * **Problem:** Attacker gains root via exploit.
 * **SELinux:** `sshd_t` cannot modify `/etc/shadow`.
   ✅ Exploit impact reduced.
 
-#### Scenario 6: Multi-Tenant Hosting
+## Scenario 6: Multi-Tenant Hosting
 
 * **Problem:** One container compromises another.
 * **SELinux:** MLS/MCS policies keep them isolated.
   ✅ Tenant separation enforced.
 
-#### Scenario 7: Protecting Logs
+## Scenario 7: Protecting Logs
 
 * **Problem:** Malware deletes `/var/log/audit/audit.log`.
 * **SELinux:** Only `auditd_t` can write logs.
