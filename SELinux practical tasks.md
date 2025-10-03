@@ -35,6 +35,35 @@ SELinux (Security-Enhanced Linux) is a **mandatory access control (MAC) system**
 
 ### 2.1 Real-World Scenarios
 
+## Scenario 0: Changing Apache HTTP port
+```bash
+# Step 1: Change Apache port in the configuration
+sudo vi /etc/httpd/conf/httpd.conf
+# Find the line:
+# Listen 80
+# Change it to:
+# Listen 88
+
+# Step 2: Update SELinux to allow Apache on the new port
+sudo semanage port -a -t http_port_t -p tcp 88
+# If port already defined, modify instead:
+# sudo semanage port -m -t http_port_t -p tcp 88
+
+# Step 3: Add the new port to the firewall permanently
+sudo firewall-cmd --permanent --add-port=88/tcp
+# Reload firewall to apply changes
+sudo firewall-cmd --reload
+
+# Step 4: Restart Apache to apply configuration changes
+sudo systemctl restart httpd
+# Optionally, check status to confirm
+sudo systemctl status httpd
+
+# Step 5: Verify Apache is listening on the new port
+sudo ss -tunlp | grep httpd
+
+```
+
 #### Scenario 1: Apache Serving Web Pages
 
 * **Problem:** Apache cannot serve `/srv/mywebsite/index.html`.
