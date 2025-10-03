@@ -35,8 +35,6 @@ SELinux (Security-Enhanced Linux) is a **mandatory access control (MAC) system**
 
 ## Scenario 0: Changing Apache HTTP Port
 
-### Recommended Method (Step-by-Step)
-
 ```bash
 # Step 1: Change Apache port in the configuration
 sudo vi /etc/httpd/conf/httpd.conf
@@ -80,17 +78,36 @@ semodule -i my_httpd.pp
 * For RHCSA, the correct way is to use **`semanage port`** for Apache port changes.
 ---
 
-#### Scenario 1: Apache Serving Web Pages
-
-* **Problem:** Apache cannot serve `/srv/mywebsite/index.html`.
-* **Fix:**
+## Scenario 1: Changing Apache DocumentRoot
 
 ```bash
-semanage fcontext -a -t httpd_sys_content_t "/srv/mywebsite(/.*)?"
-restorecon -Rv /srv/mywebsite
-```
+# Step 1: Create the new directory
+sudo mkdir -p /webdata
+echo "Hello from new DocumentRoot" | sudo tee /webdata/index.html
 
-✅ Apache restricted to safe web dirs.
+# Step 2: Update Apache configuration
+sudo vi /etc/httpd/conf/httpd.conf
+# Find:
+# DocumentRoot "/var/www/html"
+# Change to:
+# DocumentRoot "/webdata"
+
+# Step 3: Adjust SELinux file context
+sudo semanage fcontext -a -t httpd_sys_content_t "/webdata(/.*)?"
+sudo restorecon -Rv /webdata
+
+# Step 4: Set permissions
+sudo chown -R apache:apache /webdata
+sudo chmod -R 755 /webdata
+
+# Step 5: Restart Apache
+sudo systemctl restart httpd
+sudo systemctl status httpd
+
+# Step 6: Verify
+curl http://localhost
+```
+---
 
 ## Scenario 2: SSH Home Directory Issue
 
