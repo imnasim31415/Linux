@@ -848,20 +848,6 @@ du -h /var | sort -hr | head -10
 
 Report or omit repeated lines (requires sorted input).
 
-### Basic Syntax
-```bash
-uniq [options] file
-```
-
-### Common Options
-```bash
--c    # Count occurrences
--d    # Show only duplicate lines
--u    # Show only unique lines
--i    # Ignore case
--f N  # Skip first N fields
-```
-
 ### Basic Usage
 ```bash
 # Remove adjacent duplicate lines
@@ -893,30 +879,6 @@ sort file.txt | uniq -c | sort -rn
 
 # Find most common entries
 sort file.txt | uniq -c | sort -rn | head -10
-```
-
-### Practical RHCSA Examples
-```bash
-# Count unique IP addresses in access log
-awk '{print $1}' /var/log/httpd/access_log | sort | uniq -c | sort -rn
-
-# Find duplicate lines in file
-sort /etc/hosts | uniq -d
-
-# Count failed login attempts per user
-grep "Failed password" /var/log/secure | awk '{print $9}' | sort | uniq -c | sort -rn
-
-# List unique shells in use
-cut -d: -f7 /etc/passwd | sort | uniq
-
-# Count unique mounted filesystems
-df -T | awk 'NR>1 {print $2}' | sort | uniq -c
-
-# Find repeated error messages
-grep "error" /var/log/messages | sort | uniq -c | sort -rn | head
-
-# Count connections per IP
-ss -tn | awk 'NR>1 {print $5}' | cut -d: -f1 | sort | uniq -c | sort -rn
 ```
 
 ---
