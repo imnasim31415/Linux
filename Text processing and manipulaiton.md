@@ -1204,47 +1204,7 @@ echo "World" | tee -a output.txt
 
 # Write to multiple files
 echo "Data" | tee file1.txt file2.txt file3.txt
-
-# Chain with other commands
-cat input.txt | tee intermediate.txt | grep "pattern"
 ```
-
-## Practical RHCSA Examples
-```bash
-# Save command output while viewing it
-ls -la /etc | tee /tmp/etc_listing.txt
-
-# Log installation process
-yum install httpd | tee /var/log/httpd_install.log
-
-# Save and view system info
-cat /proc/cpuinfo | tee cpuinfo_backup.txt | less
-
-# Append to log while monitoring
-tail -f /var/log/messages | tee -a /tmp/monitoring.log
-
-# Run command as root and save output
-sudo dmesg | tee /tmp/dmesg_output.txt
-
-# Save multiple outputs
-ps aux | tee process_full.txt | grep httpd | tee httpd_processes.txt
-
-# Write to file requiring sudo while running as user
-echo "192.168.1.100 server" | sudo tee -a /etc/hosts
-
-# Capture command output and error
-command 2>&1 | tee output.log
-
-# Monitor and log in real-time
-journalctl -f | tee /tmp/journal_monitor.log
-
-# Save disk usage report
-df -h | tee /tmp/disk_usage_$(date +%Y%m%d).txt
-
-# Create backup while viewing content
-tar -czf - /etc | tee /backup/etc_backup.tar.gz | tar -tzf - | less
-```
-
 ---
 
 ## Combining Commands
