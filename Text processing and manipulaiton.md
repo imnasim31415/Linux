@@ -1194,20 +1194,7 @@ find /tmp -name "*.cache" -print0 | xargs -0 rm -rf
 ---
 
 ## tee
-
 Read from stdin and write to stdout and files simultaneously.
-
-### Basic Syntax
-```bash
-command | tee file.txt
-```
-
-### Common Options
-```bash
--a    # Append to file instead of overwrite
-```
-
-### Basic Usage
 ```bash
 # Write to file and display
 echo "Hello" | tee output.txt
@@ -1222,7 +1209,7 @@ echo "Data" | tee file1.txt file2.txt file3.txt
 cat input.txt | tee intermediate.txt | grep "pattern"
 ```
 
-### Practical RHCSA Examples
+## Practical RHCSA Examples
 ```bash
 # Save command output while viewing it
 ls -la /etc | tee /tmp/etc_listing.txt
