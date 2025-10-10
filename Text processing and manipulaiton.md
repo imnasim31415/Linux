@@ -5,12 +5,10 @@
 - [grep](#grep)
 - [sed](#sed)
 - [awk](#awk)
-- [cut](#cut)
 - [sort](#sort)
 - [uniq](#uniq)
 - [tr](#tr)
 - [wc](#wc)
-- [xargs](#xargs)
 - [tee](#tee)
 
 ---
