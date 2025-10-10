@@ -1012,22 +1012,7 @@ cat config.txt | tr 'a-z' 'A-Z'
 ---
 
 ## wc
-
 Word, line, character, and byte count.
-
-### Basic Syntax
-```bash
-wc [options] file
-```
-
-### Common Options
-```bash
--l    # Count lines
--w    # Count words
--c    # Count bytes
--m    # Count characters
--L    # Length of longest line
-```
 
 ### Basic Usage
 ```bash
@@ -1040,23 +1025,14 @@ wc -l file.txt
 # Count only words
 wc -w file.txt
 
-# Count only characters
-wc -m file.txt
-
 # Count multiple files
 wc -l file1.txt file2.txt file3.txt
-
-# Find longest line
-wc -L file.txt
 ```
 
 ### Practical RHCSA Examples
 ```bash
 # Count number of users
 wc -l /etc/passwd
-
-# Count logged-in users
-who | wc -l
 
 # Count running processes
 ps aux | wc -l
@@ -1066,15 +1042,6 @@ ls /etc | wc -l
 
 # Count error lines in log
 grep "error" /var/log/messages | wc -l
-
-# Count unique IP addresses
-awk '{print $1}' access.log | sort -u | wc -l
-
-# Count words in all text files
-cat *.txt | wc -w
-
-# Check number of mounted filesystems
-mount | wc -l
 
 # Count configuration files
 find /etc -name "*.conf" | wc -l
