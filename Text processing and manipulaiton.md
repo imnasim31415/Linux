@@ -453,8 +453,6 @@ sed -i 's/oldhost/newhost/g' /etc/hosts
 ## awk
 
 Pattern scanning and text processing language.
-
-### Basic Syntax
 ```bash
 awk 'pattern {action}' file
 ```
@@ -496,9 +494,6 @@ awk -F: '{print $1}' /etc/passwd
 # Use comma as delimiter
 awk -F, '{print $2}' data.csv
 
-# Multiple character delimiter
-awk -F"::" '{print $1}' file.txt
-
 # Use tab as delimiter
 awk -F'\t' '{print $1}' file.txt
 ```
@@ -520,29 +515,9 @@ awk '$3 > 100' file.txt
 # Multiple conditions (AND)
 awk '$3 > 100 && $4 < 200' file.txt
 
-# Multiple conditions (OR)
-awk '$1 == "root" || $1 == "admin"' file.txt
-
 # NOT match
 awk '$1 != "root"' file.txt
 
-# Regular expression match in column
-awk '$1 ~ /^root/' /etc/passwd
-
-# Inverse regex match
-awk '$1 !~ /^root/' /etc/passwd
-```
-
-### BEGIN and END Blocks
-```bash
-# Execute before processing (print header)
-awk 'BEGIN {print "Username"} {print $1}' file.txt
-
-# Execute after processing (print footer)
-awk '{sum += $1} END {print "Total:", sum}' numbers.txt
-
-# Both BEGIN and END
-awk 'BEGIN {print "Start"} {print $1} END {print "Done"}' file.txt
 ```
 
 ### Calculations
@@ -591,15 +566,6 @@ awk 'NF == 5' file.txt
 awk '{print FILENAME, $1}' file.txt
 ```
 
-### Output Field Separator (OFS)
-```bash
-# Change output separator
-awk -F: 'BEGIN {OFS="="} {print $1, $3}' /etc/passwd
-
-# Format output nicely
-awk 'BEGIN {OFS="\t"} {print $1, $2, $3}' file.txt
-```
-
 ### Practical RHCSA Examples
 ```bash
 # List usernames from /etc/passwd
@@ -623,9 +589,6 @@ ps aux | awk 'NR > 1 {sum += $6} END {print sum/1024 "MB"}'
 # Print disk usage over 80%
 df -h | awk '$5 > 80 {print $0}'
 
-# Format /etc/passwd output
-awk -F: 'BEGIN {print "User\t\tUID\tHome"} {printf "%-15s %-7s %s\n", $1, $3, $6}' /etc/passwd
-
 # Count number of running processes
 ps aux | awk 'END {print NR-1}'
 
@@ -635,26 +598,8 @@ ip addr | awk '/inet / {print $2}'
 # Parse log files by date
 awk '/Jan 15/ {print $0}' /var/log/messages
 
-# Sum network traffic
-awk '{rx += $2; tx += $10} END {print "RX:", rx, "TX:", tx}' network_stats.txt
-
-# Print specific fields from ss output
-ss -tuln | awk 'NR > 1 {print $5}' | cut -d: -f1 | sort -u
-
 # Filter and format systemctl output
 systemctl list-units --type=service | awk '$4 == "running" {print $1}'
-```
-
-### Printf Formatting
-```bash
-# Formatted output
-awk '{printf "%-10s %5d\n", $1, $2}' file.txt
-
-# Format with decimals
-awk '{printf "%.2f\n", $3}' file.txt
-
-# Complex formatting
-awk -F: '{printf "User: %-15s UID: %5d\n", $1, $3}' /etc/passwd
 ```
 
 ---
