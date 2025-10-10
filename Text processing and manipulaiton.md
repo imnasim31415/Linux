@@ -922,20 +922,7 @@ ss -tn | awk 'NR>1 {print $5}' | cut -d: -f1 | sort | uniq -c | sort -rn
 ---
 
 ## tr
-
 Translate or delete characters.
-
-### Basic Syntax
-```bash
-tr [options] SET1 [SET2]
-```
-
-### Common Options
-```bash
--d    # Delete characters
--s    # Squeeze repeated characters
--c    # Complement SET1
-```
 
 ### Character Replacement
 ```bash
@@ -965,48 +952,16 @@ echo "hello world" | tr -d ' '
 
 # Delete newlines
 tr -d '\n' < file.txt
-
-# Delete all digits
-cat file.txt | tr -d '0-9'
-```
-
-### Squeeze Characters
-```bash
-# Squeeze repeated spaces to single space
-echo "hello    world" | tr -s ' '
-
-# Squeeze repeated newlines
-tr -s '\n' < file.txt
-
-# Squeeze repeated characters
-echo "heeellllooo" | tr -s 'elo'
 ```
 
 ### Practical RHCSA Examples
 ```bash
-# Convert DOS line endings to Unix
-tr -d '\r' < dosfile.txt > unixfile.txt
-
-# Remove all non-alphanumeric characters
-cat file.txt | tr -cd 'a-zA-Z0-9\n'
 
 # Convert filename spaces to underscores
 echo "my file name.txt" | tr ' ' '_'
 
-# Remove all punctuation
-cat document.txt | tr -d '[:punct:]'
-
-# Extract only digits from string
-echo "Server IP: 192.168.1.1" | tr -cd '0-9.'
-
 # Convert PATH to multiline
 echo $PATH | tr ':' '\n'
-
-# Squeeze multiple spaces in ps output
-ps aux | tr -s ' '
-
-# Convert lowercase to uppercase for configuration
-cat config.txt | tr 'a-z' 'A-Z'
 ```
 
 ---
