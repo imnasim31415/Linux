@@ -53,13 +53,15 @@ Loop through `/tmp/filelist.txt` and check if each file exists.
 
 ```bash
 #!/bin/bash
-while read FILE; do
-  if [ -f "$FILE" ]; then
-    echo "$FILE exists."
-  else
-    echo "$FILE not found."
-  fi
-done < /tmp/filelist.txt
+
+for line in $(cat filelist.txt); do
+	if [[ -f $line ]]; then
+		echo "$line exists"
+	else
+		echo "$line not found"
+	fi
+done
+
 ```
 
 </details>
@@ -73,10 +75,11 @@ Count number of lines in every `.log` file under `/var/log/`.
 <details><summary>💡 Answer</summary>
 
 ```bash
-#!/bin/bash
-for f in /var/log/*.log; do
-  [ -f "$f" ] || continue
-  echo "$f : $(wc -l < "$f") lines"
+#/bin/bash
+
+for file in /var/log/*.log;do
+	lines="${#file}"
+	echo "$file - $lines"
 done
 ```
 
@@ -107,10 +110,11 @@ Display number of currently running services using `systemctl`.
 
 <details><summary>💡 Answer</summary>
 
-```ba0sh
+```bash
 #!/bin/bash
-COUNT=$(systemctl list-units --type=service --state=running | grep -vE 'LOAD|LIST' | wc -l)
-echo "Active services: $COUNT"
+
+services=$(systemctl list-units --type service --state running | grep 'loaded active' | wc -l)
+echo $services
 ```
 
 </details>
@@ -125,17 +129,19 @@ Perform arithmetic operations using three arguments.
 
 ```bash
 #!/bin/bash
-if [ $# -ne 3 ]; then
-  echo "Usage: $0 num1 operator num2"
-  exit 1
+
+read a b c
+if [[ $b = '+' ]]; then
+	ans=$((a+c))
+elif [[ $b = '-' ]] ; then
+	ans=$((a-c))
+elif [[ $b = '*' ]] ; then
+	ans=$((a*c))
+else 
+	ans=$((a/c))
 fi
-case $2 in
-  +) echo $(($1 + $3)); ;;
-  -) echo $(($1 - $3)); ;;
-  \*) echo $(($1 * $3)); ;;
-  /) echo $(($1 / $3)); ;;
-  *) echo "Invalid operator." ;;
-esac
+echo $ans
+
 ```
 
 </details>
@@ -171,7 +177,22 @@ List all files larger than 100MB in a given directory.
 
 ```bash
 #!/bin/bash
-find "$1" -type f -size +100M -exec ls -lh {} \; | awk '{print $9, $5}'
+
+read path
+
+files=$(find $path -type f -size +100M 2>/dev/null) 
+
+for file in $files; do
+	size=$(du -h $file | awk '{print $1}')
+	echo "$file - $size"
+done
+    
+# With files sorted
+#!/bin/bash
+read path
+
+find "$path" -type f -size +100M -exec du -h {} + 2>/dev/null  | sort -hr
+
 ```
 
 </details>
@@ -278,41 +299,6 @@ ping -c3 8.8.8.8 &>/dev/null && echo "Online" || echo "Offline"
 
 ---
 
-- [ ] **Task 16: Empty File Finder**
-
-Find and list empty files inside `/tmp`.
-
-<details><summary>💡 Answer</summary>
-
-```bash
-#!/bin/bash
-find /tmp -type f -empty -print
-```
-
-</details>
-
----
-
-- [ ] **Task 17: CPU Load Alert**
-
-Check CPU load average and warn if above 2.0.
-
-<details><summary>💡 Answer</summary>
-
-```bash
-#!/bin/bash
-LOAD=$(awk '{print $1}' /proc/loadavg)
-if (( $(echo "$LOAD > 2.0" | bc -l) )); then
-  echo "High load: $LOAD"
-else
-  echo "Normal load: $LOAD"
-fi
-```
-
-</details>
-
----
-
 - [ ] **Task 18: Directory Space Usage**
 
 Show disk usage of each subdirectory under `/var`.
@@ -399,38 +385,12 @@ Warn if memory usage exceeds 90%.
 
 ```bash
 #!/bin/bash
-USED=$(free | awk '/Mem/{printf("%.0f", $3/$2*100)}')
+USED=$(free | awk '/Mem/{printf("%d", $3/$2*100)}')
 if [ $USED -gt 90 ]; then
   echo "Memory usage high: $USED%"
 else
   echo "Memory OK: $USED%"
 fi
-```
-
-</details>
-
----
-
-- [ ] **Task 24: Command-line Menu Script**
-
-Create a simple menu offering to list files, show date, or exit.
-
-<details><summary>💡 Answer</summary>
-
-```bash
-#!/bin/bash
-while true; do
-  echo "1. List files"
-  echo "2. Show date"
-  echo "3. Exit"
-  read -p "Choose an option: " choice
-  case $choice in
-    1) ls ;;
-    2) date ;;
-    3) exit 0 ;;
-    *) echo "Invalid option" ;;
-  esac
-done
 ```
 
 </details>
@@ -456,7 +416,17 @@ echo "Disk Usage: $(df -h / | awk 'NR==2{print $5}')"
 
 ---
 
-✅ **Pro Tip for RHCSA Candidates:**
+**Pro Tip for RHCSA Candidates:**
+```markdown
 
-> Practice writing, saving, and executing each script under `/scripts/`.
-> Use `chmod +x` and test with various inputs. Combine loops, conditionals, and command substitution for full marks!
+## Variables
+var=5       # no spaces; access with $var; quote when needed "$var"
+
+## Arrays
+arr=(1 2 3); echo "${arr[@]}"   # access with ${arr[idx]}
+
+## Arithmetic
+((sum=a+b)); echo $sum; ((i++))  # or sum=$(expr $a + $b)
+
+## quote vars, use [[ ]] for complex conditions, check $? for status
+```
