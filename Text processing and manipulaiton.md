@@ -745,25 +745,6 @@ cut -d',' -f2,3 data.csv
 
 ## sort
 
-Sort lines of text files.
-
-### Basic Syntax
-```bash
-sort [options] file
-```
-
-### Common Options
-```bash
--r    # Reverse sort
--n    # Numeric sort
--u    # Unique (remove duplicates)
--k    # Sort by specific column/key
--t    # Field delimiter
--h    # Human-readable numbers (1K, 2M, 3G)
--f    # Ignore case
--o    # Output to file
-```
-
 ### Basic Sorting
 ```bash
 # Alphabetical sort
@@ -796,52 +777,9 @@ sort -k2 -n file.txt
 # Sort by third column with custom delimiter
 sort -t: -k3 -n /etc/passwd
 
-# Sort by multiple columns
-sort -k1,1 -k2,2n file.txt
-
-# Sort by column range
-sort -k2,4 file.txt
-
-# Reverse sort by specific column
-sort -k3 -rn file.txt
-```
-
-### Human-Readable Sort
-```bash
 # Sort by size (handles K, M, G)
 du -h | sort -h
-
-# Sort df output by size
-df -h | sort -k2 -h
 ```
-
-### Practical RHCSA Examples
-```bash
-# Sort users by UID
-sort -t: -k3 -n /etc/passwd
-
-# Sort disk usage output
-du -h /var/log | sort -h
-
-# Sort processes by memory usage
-ps aux | sort -k4 -rn | head -10
-
-# Sort and remove duplicate lines
-sort -u /var/log/messages | wc -l
-
-# Sort IP addresses numerically
-sort -t. -k1,1n -k2,2n -k3,3n -k4,4n ip_list.txt
-
-# Sort by multiple fields
-sort -t: -k3,3n -k1,1 /etc/passwd
-
-# Sort files by modification time (with ls)
-ls -lt | sort -k6,7
-
-# Find top 10 largest directories
-du -h /var | sort -hr | head -10
-```
-
 ---
 
 ## uniq
