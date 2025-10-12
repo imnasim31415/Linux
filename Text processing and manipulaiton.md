@@ -73,9 +73,6 @@ find /usr/bin -type f -perm 755
 # Files with at least these permissions (any of these bits set)
 find /tmp -type f -perm -644
 
-# Files with any of these permissions
-find /home -type f -perm /u+x
-
 # Find SUID files (security audit)
 find / -type f -perm -4000 2>/dev/null
 
@@ -90,12 +87,6 @@ find /home -user john
 
 # Files owned by group
 find /var -group apache
-
-# Files with no valid owner (deleted user)
-find / -nouser
-
-# Files with no valid group
-find / -nogroup
 ```
 
 #### Find by Time
